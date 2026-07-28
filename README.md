@@ -1,6 +1,6 @@
 # The Urban Legal Mirage
 
-This repository contains the data-processing and analysis pipeline for **“The Urban Legal Mirage: Abundance and affordability of legal services in U.S. cities.”** The code constructs metropolitan-area lawyer datasets, estimates scaling relationships, builds specialty-specific demand proxies, measures affordability and legal-economy coupling, and generates the figures and result tables covered by this repository.
+This repository contains the data-processing and analysis pipeline for **“The Urban Legal Mirage: Abundance and affordability of legal services in U.S. cities.”** The code constructs metropolitan-area lawyer datasets, estimates scaling relationships, builds specialty-specific demand proxies, measures affordability and legal-economy coupling, and generates the figures and result tables covered by this paper.
 
 ## Reproducibility options
 

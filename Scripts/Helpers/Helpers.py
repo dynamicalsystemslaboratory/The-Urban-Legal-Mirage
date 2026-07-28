@@ -10,10 +10,9 @@ import pandas as pd
 from matplotlib.ticker import LogLocator, LogFormatter, NullFormatter
 from numpy import log10 as log
 import matplotlib.colors as mcolors
-import getpass
 from pathlib import Path
-user = getpass.getuser()
-PROJECT_ROOT = Path(f"/Users/{user}/Final_Lawyer_Git July10")
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 def scale(x, y, n_perm=100000):    
     x_log = log(x).reshape(-1, 1)

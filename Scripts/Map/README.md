@@ -49,7 +49,7 @@ Creates the national MSA map of lawyers per capita and a second annotated map id
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. The code assumes `PROJECT_ROOT = /Users/<username>/Final_Lawyer_Git July10`.
+Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 

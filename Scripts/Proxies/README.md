@@ -53,7 +53,7 @@ Builds the MSA-level bankruptcy-law supply and demand table using 2024 bankruptc
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. The code assumes `PROJECT_ROOT = /Users/<username>/Final_Lawyer_Git July10`.
+Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 
@@ -98,7 +98,7 @@ Builds the 2024 MSA criminal-defense demand proxy by combining NIBRS Group A inc
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. The code assumes `PROJECT_ROOT = /Users/<username>/Final_Lawyer_Git July10`.
+Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 
@@ -142,7 +142,7 @@ Builds the MSA-level family-law supply and demand table using the number of divo
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. The code assumes `PROJECT_ROOT = /Users/<username>/Final_Lawyer_Git July10`.
+Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 
@@ -185,7 +185,7 @@ Builds the MSA-level immigration-law supply and demand table using 2024 foreign-
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. The code assumes `PROJECT_ROOT = /Users/<username>/Final_Lawyer_Git July10`.
+Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 
@@ -228,7 +228,7 @@ Builds the MSA-level intellectual-property-law supply and demand table using 201
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. The code assumes `PROJECT_ROOT = /Users/<username>/Final_Lawyer_Git July10`.
+Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 
@@ -272,7 +272,7 @@ Builds the MSA-level real-estate-law supply and demand table using total 2024 Zi
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. The code assumes `PROJECT_ROOT = /Users/<username>/Final_Lawyer_Git July10`.
+Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 
@@ -322,7 +322,7 @@ Creates the six-panel supplementary figure comparing specialty lawyer supply wit
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. The code assumes `PROJECT_ROOT = /Users/<username>/Final_Lawyer_Git July10`.
+Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 

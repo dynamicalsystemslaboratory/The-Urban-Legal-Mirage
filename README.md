@@ -162,7 +162,7 @@ The introductory ABA analysis requires:
 Data/Introduction/aba_county_lawyers.csv
 Data/Population Data/County Population/co-est2019-alldata.csv
 ```
-The aba_county_lawyers.csv was obtained by manually collecting county-level lawyer counts from the ABA Profile of the Legal Profession 2020, available at https://www.americanbar.org/content/dam/aba/administrative/news/2020/07/potlp2020.pdf. After running `Scripts/Introduction/ABA_Data_Extraction.ipynb`, the resulting CSV, `aba_county_lawyers_intro.csv`, contains the county-level lawyer counts and corresponding MSA population, used to identify legal deserts based on ABA classification. 
+The `aba_county_lawyers.csv` was obtained by manually collecting county-level lawyer counts from the ABA Profile of the Legal Profession 2020, available at https://www.americanbar.org/content/dam/aba/administrative/news/2020/07/potlp2020.pdf. After running `Scripts/Introduction/ABA_Data_Extraction.ipynb`, the resulting CSV, `aba_county_lawyers_intro.csv`, contains the county-level lawyer counts and corresponding MSA population, used to identify legal deserts based on ABA classification. 
 
 "_The raw numbers portray two disparate realities of Americans living even within the same state: Just as 40% of U.S. counties fall below the proposed threshold, about 1% exceed it by a factor of ten or more._"
 
@@ -287,7 +287,6 @@ Then run:
 Scripts/Proxies/Proxies_Plots.ipynb
 ```
 
-The intellectual-property notebook must remove the final subtotal row while retaining the first valid MSA row.
 
 ### 8. Run the availability collapse
 

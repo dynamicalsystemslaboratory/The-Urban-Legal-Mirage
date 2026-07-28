@@ -96,8 +96,16 @@ ZIP_CBSA_122024.xlsx
 qcew-county-msa-csa-crosswalk-clean.xlsx
 brightdata_practice_area_to_12_crosswalk_90pct.csv
 ```
+The first three files were obtained from Bright Data and contain all the individual lawyer profiles. These datasets are confidential and cannot be shared herein. 
 
-It produces the three core files used throughout the repository:
+
+`ZIP_CBSA_122024.xlsx` is the HUD-USPS ZIP Code Crosswalk File published by the U.S. Department of Housing and Urban Development (HUD), which allocates USPS ZIP Codes to CBSAs, and can be obtained here: https://www.huduser.gov/portal/datasets/usps_crosswalk.html
+
+`qcew-county-msa-csa-crosswalk-clean.xlsx` is the BLS' county to CBSA Crosswalk File, which maps counties to corresponding CBSAs. The raw crosswalk can be obtained from: https://www.bls.gov/cew/classifications/areas/county-msa-csa-crosswalk.htm. Our cleaned crosswalk, `qcew-county-msa-csa-crosswalk-clean.xlsx`, is obtained by removing the unnecessary sheets from the downloaded file, named qcew-county-msa-csa-crosswalk.xlsx, and keeping only the "Jul. 2023 Crosswalk" sheet.
+
+`brightdata_practice_area_to_12_crosswalk_90pct.csv` is the crosswalk that maps Martindale's listed areas of practice to lawyer specializations. This crosswalk was manually created by us for the purposes of this paper and is not an official or endorsed crosswalk from Martindale.
+
+The pipeline, `Lawyer_Paper_Complete_Pipeline.ipynb`, produces the three core files used throughout the repository:
 
 ```text
 Data/BrightData_Lawyers/BrightData_Lawyers_master.csv
@@ -117,9 +125,9 @@ Data/Population Data/MSA Population/ACSDT1Y<year>.B01003-Data.csv
 Data/Population Data/County Population/co-est2019-alldata.csv
 ```
 
-Place all shapefile components beside the `.shp` file, including the corresponding `.dbf`, `.shx`, and `.prj` files.
-
-The annual MSA population series uses 2010–2019 and 2021–2024. The one-year 2020 ACS file is not used.
+Each shapefile folder should include all shapefile components, including `.shp` and the corresponding `.dbf`, `.shx`, and `.prj` files. All shapefiles can be downloaded from the TIGER/Line® Shapefiles web interface: https://www.census.gov/cgi-bin/geo/shapefiles/index.php.
+The annual MSA population series uses 2010–2019 and 2021–2024. The one-year 2020 ACS file is not used. These population estimates can be obtained from the Census Data website: https://data.census.gov/table/ACSDT1Y2024.B01003?q=B01003&g=010XX00US$3100000.
+The annual county population series is obtained from the Census Data website: https://www.census.gov/newsroom/press-kits/2020/pop-estimates-county-metro.html. The dataset is used in the introduction and is not part of the analysis, see `Scripts/Introduction/ABA_Data_Extraction.ipynb`.
 
 ### Occupational and economic inputs
 
@@ -128,6 +136,17 @@ Data/BLS data/Uniform tables/Professional Licensed Occupations.xlsx
 Data/BLS data/Uniform tables/MSA_<year>_Uniform.xlsx
 Data/BLS data/GDP/GDP and Personal Income Formatted.csv
 ```
+Professional Licensed Occupations.xlsx is a crosswalk we created manually detailing changes in SOC codes and occupation titles for licensed professionals over time in the BLS data. The crosswalk was created by manually tracking changes in the licensed, professional occupations, chosen based on the criteria detailed in the paper, across BLS publications in different years. This crosswalk can be found in `Data/BLS Data/Uniform Tables/Professional Licensed Occupations.xlsx`.
+
+We obtain the BLS data for occupations and salary from the BLS website: https://www.bls.gov/oes/tables.htm. MSA_<year>_Uniform.xlsx files are created as follows:
+* For each year, download the zip file associated with "Metropolitan and nonmetropolitan area (XLSX)."
+* Extract the "MSA_<year>_dl" from the zip. If multiple files are available (for earlier years), join them into one file.
+* Harmonize headers of all files across all years to be consistent. The final headers are: AREA_TITLE	AREA_TYPE	PRIM_STATE	NAICS	NAICS_TITLE	I_GROUP	OWN_CODE	OCC_CODE	OCC_TITLE	O_GROUP	TOT_EMP	EMP_PRSE	JOBS_1000	LOC_QUOTIENT	PCT_TOTAL	PCT_RPT	H_MEAN	A_MEAN	MEAN_PRSE	H_PCT10	H_PCT25	H_MEDIAN	H_PCT75	H_PCT90	A_PCT10	A_PCT25	A_MEDIAN	A_PCT75	A_PCT90	ANNUAL	HOURLY
+* Rename files to MSA_<year>_Uniform.xlsx, with each year corresponding to a single file.
+
+
+We use the BEA's MSA-level GDP data, which were available at the time of data collection. BEA subsequently discontinued publication of MSA-level GDP statistics and now publishes GDP estimates only at the county level. The original file was reformatted to be easily read in Python. We provide this file in `Data/BLS Data/GDP/GDP and Personal Income Formatted.csv`.
+
 
 The BLS filtering notebook harmonizes the annual occupation tables and writes:
 
@@ -136,13 +155,20 @@ Data/Processed Data/Filtered tables/MSA_<year>_Filtered_Extended_Professions.xls
 ```
 
 ### Additional inputs
-
+## Introduction
 The introductory ABA analysis requires:
 
 ```text
 Data/Introduction/aba_county_lawyers.csv
 Data/Population Data/County Population/co-est2019-alldata.csv
 ```
+The aba_county_lawyers.csv was obtained by manually collecting county-level lawyer counts from the ABA Profile of the Legal Profession 2020, available at https://www.americanbar.org/content/dam/aba/administrative/news/2020/07/potlp2020.pdf. After running `Scripts/Introduction/ABA_Data_Extraction.ipynb`, the resulting CSV, `aba_county_lawyers_intro.csv`, contains the county-level lawyer counts and corresponding MSA population, used to identify legal deserts based on ABA classification. 
+
+"_The raw numbers portray two disparate realities of Americans living even within the same state: Just as 40% of U.S. counties fall below the proposed threshold, about 1% exceed it by a factor of ten or more._"
+
+The last part of the above sentence, taken from the paper, is based on these counts (1%).
+
+## Proxies for number of cases
 
 The six legal-demand proxies require bankruptcy, NIBRS crime, ACS family and immigration, patent, and Zillow real-estate files. Their exact filenames and locations are documented in [`Scripts/Proxies/README.md`](Scripts/Proxies/README.md).
 
@@ -161,25 +187,25 @@ Raw annual BLS tables + licensed-profession crosswalk
 
 Lawyer master + population + geography
     ├── Map → Figure 1
-    ├── Abundance → Figure 2 and Supplementary Figures 1–5
+    ├── Abundance → Figure 2, Supplementary Figures 1–5, and Supplementary Tables 1-2
     └── Consistency → sanity-check data and Supplementary Figure 8
 
 Normalized lawyer master + six specialty demand sources
     └── Six proxy notebooks
         ├── Six normalized proxy CSVs
         ├── Proxies_Plots.ipynb → Supplementary Figure 6
-        └── Cases per Lawyer Data Collapse.nb → collapsed availability analysis
+        └── Cases per Lawyer Data Collapse.nb → Figure 3
 
 Harmonized BLS tables + ACS population
     └── Extended_Professions_Affordability.ipynb
         ├── Figure 4
         ├── annual affordability tables
-        ├── Linear trend analysis of lawyer affordability.nb
+        ├── Linear trend analysis of lawyer affordability.nb → Supplementary Table 3
         └── Lawyers_2024_Spearman_Plot.ipynb → Supplementary Figure 7
 
 Harmonized BLS tables + ACS population + metropolitan GDP
     └── Legal_Economy_Data.ipynb
-        └── Legal_Economy_Results.ipynb → result CSVs and displayed yearly figures
+        └── Legal_Economy_Results.ipynb → Supplementary Table 4
 
 ABA county lawyer counts + county population
     └── ABA_Data_Extraction.ipynb → introductory county statistics
@@ -265,7 +291,7 @@ The intellectual-property notebook must remove the final subtotal row while reta
 
 ### 8. Run the availability collapse
 
-Copy the six normalized proxy CSVs beside:
+Copy the six normalized proxy CSVs into the same folder with:
 
 ```text
 Scripts/Availability/Cases per Lawyer Data Collapse.nb
@@ -280,11 +306,23 @@ First run:
 ```text
 Scripts/Affordability/Extended_Professions_Affordability.ipynb
 ```
+It generates the following files:
+* `Supplementary_Figure_7_Lawyers_data.csv`, data used to generate Panel a. of Supplementary Figure 7
+* `Supplementary_Figure_7_Pharmacists_data.csv`, data used to generate Panel b. of Supplementary Figure 7
+* `Annual_Average_Affordability_All.csv`, data used to generate Panel a. of Figure 4, and Supplementary Table 3
+* `Annual_Affordability_Spearman_All.csv`, data used to generate Panel b. of Figure 4
+  
+To generate Figure 4, copy `Annual_Average_Affordability_All.csv` and `Annual_Affordability_Spearman_All.csv` to Scripts/Affordability.
 
-It creates the annual affordability tables, Figure 4, and the two 2024 occupation files. After it finishes, the following analyses are independent:
+Copy the `Annual_Average_Affordability_All.csv` and `Annual_Affordability_Spearman_All.csv` files into the same folder with:
 
-- Place `Annual_Average_Affordability_All.csv` beside `Linear trend analysis of lawyer affordability.nb`, then evaluate the Mathematica notebook.
-- Run `Scripts/Affordability/Lawyers_2024_Spearman_Plot.ipynb` to create Supplementary Figure 7.
+```text
+Scripts/Affordability/Affordability analysis.nb
+```
+
+To create Supplementary Table 3, evaluate the Mathematica notebook `Linear trend analysis of lawyer affordability.nb`.
+To create Supplementary Figure 7, run `Scripts/Affordability/Lawyers_2024_Spearman_Plot.ipynb`.
+
 
 ### 10. Run the legal-economy analysis
 
@@ -294,20 +332,6 @@ Run in this order:
 2. `Scripts/Legal-Economy-Coupling/Legal_Economy_Results.ipynb`
 
 The second notebook saves the result CSVs and displays the yearly figures without requiring figure-file export.
-
-## Main outputs
-
-| Analysis | Main output |
-|---|---|
-| Introduction | `Data/Introduction/aba_county_lawyers_intro.csv` and printed county statistics |
-| Map | `Figures/Figure 1/Lawyers_USA_Map_Original.pdf` and `Lawyers_USA_Map_Legal_Deserts.pdf` |
-| Abundance | `Figures/Figure 2/Figure_2.pdf` |
-| Abundance supplements | Supplementary Figures 1–5 |
-| Affordability | `Figures/Figure 4/Figure_4_V1.pdf` and annual affordability CSVs |
-| Demand proxies | Six normalized proxy CSVs and Supplementary Figure 6 |
-| Rank comparison | Supplementary Figure 7 |
-| Consistency checks | `Data/Processed Data/sanity_check_data.csv` and Supplementary Figure 8 |
-| Legal-economy coupling | `Legal_Economy_Data.csv`, `scaling_table.csv`, and `Legal_Economy_Results.csv` |
 
 ## Detailed documentation
 
@@ -326,6 +350,6 @@ The second notebook saves the result CSVs and displays the yearly figures withou
 
 - The shared scaling helpers use 100,000 bootstrap resamples for final confidence intervals. Results can vary slightly unless a NumPy random seed is set.
 - The 1-over-N normalized lawyer master assigns a lawyer with `N` mapped specialties a weight of `1/N` in each specialty.
-- Geographic analysis is restricted to valid metropolitan statistical areas; Micropolitan Statistical Areas and Puerto Rico metropolitan areas are excluded where specified by the processing pipeline.
+- Geographic analysis is restricted to valid metropolitan statistical areas; Micropolitan Statistical Areas, Connecticut MSAs, and Puerto Rico metropolitan areas are excluded where specified by the processing pipeline.
 - Preserve exact filenames and directory names. Several notebooks rely on fixed source filenames even though the repository root itself is detected automatically.
-- Large, private, or licensed raw files are intentionally excluded. Do not commit them unless their redistribution is permitted.
+- Large, private, or licensed raw files are intentionally excluded.

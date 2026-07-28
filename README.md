@@ -142,7 +142,7 @@ We obtain the BLS data for occupations and salary from the BLS website: https://
 * For each year, download the zip file associated with "Metropolitan and nonmetropolitan area (XLSX)."
 * Extract the "MSA_<year>_dl" from the zip. If multiple files are available (for earlier years), join them into one file.
 * Harmonize headers of all files across all years to be consistent. The final headers are: AREA_TITLE	AREA_TYPE	PRIM_STATE	NAICS	NAICS_TITLE	I_GROUP	OWN_CODE	OCC_CODE	OCC_TITLE	O_GROUP	TOT_EMP	EMP_PRSE	JOBS_1000	LOC_QUOTIENT	PCT_TOTAL	PCT_RPT	H_MEAN	A_MEAN	MEAN_PRSE	H_PCT10	H_PCT25	H_MEDIAN	H_PCT75	H_PCT90	A_PCT10	A_PCT25	A_MEDIAN	A_PCT75	A_PCT90	ANNUAL	HOURLY
-* Rename files to MSA_<year>_Uniform.xlsx, with each year corresponding to a single file.
+* Rename files to `MSA_<year>_Uniform.xlsx`, with each year corresponding to a single file.
 
 
 We use the BEA's MSA-level GDP data, which were available at the time of data collection. BEA subsequently discontinued publication of MSA-level GDP statistics and now publishes GDP estimates only at the county level. The original file was reformatted to be easily read in Python. We provide this file in `Data/BLS Data/GDP/GDP and Personal Income Formatted.csv`.

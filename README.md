@@ -28,7 +28,7 @@ The raw Bright Data snapshots and other licensed, restricted, or very large sour
 │   ├── Map/
 │   └── Proxies/
 ├── Data/
-│   ├── BLS data/
+│   ├── BLS Data/
 │   ├── BrightData_Lawyers/
 │   ├── Geography/
 │   ├── Introduction/

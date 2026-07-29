@@ -100,11 +100,23 @@ brightdata_practice_area_to_12_crosswalk_90pct.csv
 The first three files were obtained from Bright Data and contain all the individual lawyer profiles. These datasets are confidential and cannot be shared herein. 
 
 
-`ZIP_CBSA_122024.xlsx` is the HUD-USPS ZIP Code Crosswalk File published by the U.S. Department of Housing and Urban Development (HUD), which allocates USPS ZIP Codes to CBSAs, and can be obtained here: https://www.huduser.gov/portal/datasets/usps_crosswalk.html
+`ZIP_CBSA_122024.xlsx` is the HUD-USPS ZIP Code Crosswalk File published by the U.S. Department of Housing and Urban Development (HUD), which allocates USPS ZIP Codes to CBSAs, and can be obtained here: https://www.huduser.gov/portal/datasets/usps_crosswalk.html. The downloaded crosswalk file is named "ZIP-CBSA_122024" and should be renamed to "ZIP_CBSA_122024". Newer versions of this crosswalk may contain new headers. For reproducibility, please follow the following headers' naming scheme:
+* "ZIP" -  5 digit USPS ZIP code
+* "CBSA" - 5 digit CBSA code for Micropolitan and Metropolitan Areas as defined by OMB in February of 2013. ZIP codes with a CBSA code of ‘99999’ are not located within a CBSA. 
+* "USPS_ZIP_PREF_CITY" - USPS preferred city name
+* "USPS_ZIP_PREF_STATE" - USPS preferred state address state
+* "RES_RATIO" - The ratio of residential addresses in the ZIP – Tract, County, or CBSA part to the total number of residential addresses in the entire ZIP.
+* "BUS_RATIO" - The ratio of business addresses in the ZIP – Tract, County, or CBSA part to the total number of business addresses in the entire ZIP.
+* "OTH_RATIO" - The ratio of other addresses in the ZIP – Tract, County, or CBSA part to the total number of other addresses in the entire ZIP.
+* "TOT_RATIO" - The ratio of all addresses in the ZIP – Tract, County, or CBSA part to the total number of all types of addresses in the entire ZIP.
 
-`qcew-county-msa-csa-crosswalk-clean.xlsx` is the BLS' county to CBSA Crosswalk File, which maps counties to corresponding CBSAs. The raw crosswalk can be obtained from: https://www.bls.gov/cew/classifications/areas/county-msa-csa-crosswalk.htm. Our cleaned crosswalk, `qcew-county-msa-csa-crosswalk-clean.xlsx`, is obtained by removing the unnecessary sheets from the downloaded file, named qcew-county-msa-csa-crosswalk.xlsx, and keeping only the "Jul. 2023 Crosswalk" sheet.
+The definitions above are taken directly from HUD documentation section: https://www.huduser.gov/portal/datasets/usps_crosswalk.html
 
-`brightdata_practice_area_to_12_crosswalk_90pct.csv` is the crosswalk that maps Martindale's listed areas of practice to lawyer specializations. This crosswalk was manually created by us for the purposes of this paper and is not an official or endorsed crosswalk from Martindale.
+To download, one has to register on the HUD website (link provided in the webpage above). After registering, one should select ZIP-CBSA for "Crosswalk Type" and 4th Quarter 2024 under "Select Data Year and Quarter." 
+
+`qcew-county-msa-csa-crosswalk-clean.xlsx` is the BLS' county to CBSA Crosswalk File, which maps counties to corresponding CBSAs. The raw crosswalk can be obtained by clicking "COUNTY-MSA-CSA CROSSWALKS: XLSX" in: https://www.bls.gov/cew/classifications/areas/county-msa-csa-crosswalk.htm. Our cleaned crosswalk, `qcew-county-msa-csa-crosswalk-clean.xlsx`, is obtained by removing the unnecessary sheets from the downloaded file, named qcew-county-msa-csa-crosswalk.xlsx, and keeping only the "Jul. 2023 Crosswalk" sheet.
+
+`brightdata_practice_area_to_12_crosswalk_90pct.csv` is the crosswalk that maps Martindale's listed areas of practice to lawyer specializations. This crosswalk was manually created by us for the purposes of this paper and is not an official or endorsed crosswalk from Martindale. The crosswalk is located in `Scripts/Data Processing/` and should be downloaded before running `Lawyer_Paper_Complete_Pipeline.ipynb`.
 
 The pipeline, `Lawyer_Paper_Complete_Pipeline.ipynb`, produces the three core files used throughout the repository:
 
@@ -125,10 +137,13 @@ Data/Geography/State_shapefile_2025/tl_2025_us_state.shp
 Data/Population Data/MSA Population/ACSDT1Y<year>.B01003-Data.csv
 Data/Population Data/County Population/co-est2019-alldata.csv
 ```
+The first file includes US states Federal Information Processing System (FIPS) codes and is provided in `Data/Geography/FIPS/US states FIPS.csv`.
 
-Each shapefile folder should include all shapefile components, including `.shp` and the corresponding `.dbf`, `.shx`, and `.prj` files. All shapefiles can be downloaded from the TIGER/Line® Shapefiles web interface: https://www.census.gov/cgi-bin/geo/shapefiles/index.php.
-The annual MSA population series uses 2010–2019 and 2021–2024. The one-year 2020 ACS file is not used. These population estimates can be obtained from the Census Data website: https://data.census.gov/table/ACSDT1Y2024.B01003?q=B01003&g=010XX00US$3100000.
-The annual county population series is obtained from the Census Data website: https://www.census.gov/newsroom/press-kits/2020/pop-estimates-county-metro.html. The dataset is used in the introduction and is not part of the analysis, see `Scripts/Introduction/ABA_Data_Extraction.ipynb`.
+Each shapefile folder should include all shapefile components, including `.shp` and the corresponding `.dbf`, `.shx`, and `.prj` files. All shapefiles can be downloaded from the TIGER/Line® Shapefiles web interface: https://www.census.gov/cgi-bin/geo/shapefiles/index.php. To obtain the CBSA shapefiles, one should select 2025 and Core Based Statistical Areas under "Select year" and "Select a layer type," respectively, click submit, and then select "Metropolitan/Micropolitan Statistical Area." To obtain the States shapefiles, one should follow the same steps, selecting States (and equivalent) under "Select a layer type." All files need to be unzipped, taken from the folder, and placed into the corresponding Data/Geography folder (CBSA_shapefile_2025 and State_shapefile_2025, see directory structure above).
+
+The annual MSA population series uses 2010–2019 and 2021–2024. The one-year 2020 ACS file is not used. These population estimates can be obtained from the Census Data website: https://data.census.gov/table/ACSDT1Y2024.B01003?q=B01003&g=010XX00US$3100000. All files need to be unzipped, taken from the folder, and placed into the corresponding Data/Population Data/MSA Population folder, see directory structure above).
+
+The annual county population series is obtained from the Census Data website: https://www.census.gov/newsroom/press-kits/2020/pop-estimates-county-metro.html. The data can be downloaded by clicking "Population, Population Change, and Estimated Components of Population Change: April 1, 2010 to July 1, 2019 (CO-EST2019-alldata) [CSV]" under the Datasets section. The dataset should be placed into the corresponding Data/Population Data/County Population folder, see directory structure above). The dataset is used in the introduction and is not part of the analysis, see `Scripts/Introduction/ABA_Data_Extraction.ipynb`.
 
 ### Occupational and economic inputs
 
@@ -149,7 +164,7 @@ We obtain the BLS data for occupations and salary from the BLS website: https://
 We use the BEA's MSA-level GDP data, which were available at the time of data collection. BEA subsequently discontinued publication of MSA-level GDP statistics and now publishes GDP estimates only at the county level. The original file was reformatted to be easily read in Python. We provide this file in `Data/BLS Data/GDP/GDP and Personal Income Formatted.csv`.
 
 
-The BLS filtering notebook harmonizes the annual occupation tables and writes:
+The `Filtering_BLS_Data_Extended_Professions.ipynb` notebook harmonizes the annual occupation tables and writes:
 
 ```text
 Data/Processed Data/Filtered tables/MSA_<year>_Filtered_Extended_Professions.xlsx
@@ -247,16 +262,9 @@ Scripts/Introduction/ABA_Data_Extraction.ipynb
 
 This produces `Data/Introduction/aba_county_lawyers_intro.csv` and prints the county counts below 1 lawyer per 1,000 residents and at or above 10 lawyers per 1,000 residents.
 
-### 4. Run the abundance analyses
+### 4. Create the national maps
 
-Run in this order:
-
-1. `Scripts/Abundance/Abundance_Scaling.ipynb`
-2. `Scripts/Abundance/Abundance_Plots.ipynb`
-
-These notebooks use the lawyer master, 2024 ACS population, CBSA land area, and `Helpers.py`.
-
-### 5. Create the national maps
+Before running the code, create the output directory for the figure, titled: "Figures/Figure 1".
 
 Run:
 
@@ -265,6 +273,16 @@ Scripts/Map/Total_Lawyers_Map.ipynb
 ```
 
 This creates the metropolitan lawyer-supply map and the legal-desert map.
+
+### 5. Run the abundance analyses
+
+Run in this order:
+
+1. `Scripts/Abundance/Abundance_Scaling.ipynb`
+2. `Scripts/Abundance/Abundance_Plots.ipynb`
+
+These notebooks use the lawyer master, 2024 ACS population, CBSA land area, and `Helpers.py`.
+
 
 ### 6. Run the consistency checks
 

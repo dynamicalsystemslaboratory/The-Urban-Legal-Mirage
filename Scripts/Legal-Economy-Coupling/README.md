@@ -1,11 +1,11 @@
 # Legal-Economy-Coupling
 
-Builds the balanced legal-economy panel and estimates the annual coupling results.
+Builds the balanced legal-economy panel, estimates the annual coupling results, and produces the values reported in Supplementary Table 4.
 
 ## Execution order
 
 1. **`Legal_Economy_Data.ipynb`** — Creates the balanced legal-economy panel.
-2. **`Legal_Economy_Results.ipynb`** — Uses that panel to estimate and export the annual results.
+2. **`Legal_Economy_Results.ipynb`** — Uses that panel to estimate and export the annual results used in Supplementary Table 4.
 
 ## Code documentation
 
@@ -33,7 +33,7 @@ Constructs the balanced MSA-year panel used to analyze the relationship between 
 - `Data/Geography/CBSA_shapefile_2025/tl_2025_us_cbsa.shp`
 - Annual ACS population files in `Data/Population Data/MSA Population/`
 - `Data/BLS data/GDP/GDP and Personal Income Formatted.csv`
-- Annual `Data/Processed Data/Filtered Tables/MSA_<year>_Filtered_Extended_Professions.xlsx` files
+- Annual `Data/Processed Data/Filtered tables/MSA_<year>_Filtered_Extended_Professions.xlsx` files
 
 ### Outputs
 
@@ -63,7 +63,7 @@ Run the notebook from top to bottom in Jupyter after placing the required files 
 
 ### Purpose
 
-Estimates annual scaling relationships for the legal economy and the yearly association between lawyers per capita and legal expenditure as a share of GDP.
+Estimates annual scaling relationships for the legal economy and the yearly association between lawyers per capita and legal expenditure as a share of GDP. The yearly linear-model estimates are the source for Supplementary Table 4.
 
 ### What the code does
 
@@ -80,9 +80,11 @@ Estimates annual scaling relationships for the legal economy and the yearly asso
 
 ### Outputs
 
+- `Data/Processed Data/Legal-Economy-Coupling/scaling_table.csv`
 - `Data/Processed Data/Legal-Economy-Coupling/Legal_Economy_Results.csv`
-- Yearly plots displayed in the notebook.
-- Optional `Data/Processed Data/Figuresscaling_table.csv` and `Figures/Affordability/legal_share_<year>.pdf` when the save flags are enabled.
+- Yearly diagnostic plots displayed in the notebook; figure files are not saved.
+
+`Legal_Economy_Results.csv` contains the year, slope, intercept, 95% confidence intervals, `R^2`, and sample size used to typeset Supplementary Table 4.
 
 ### Dependencies
 
@@ -95,8 +97,20 @@ Estimates annual scaling relationships for the legal economy and the yearly asso
 
 Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
+### Supplementary Table 4 mapping
+
+For each year, Supplementary Table 4 reports:
+
+- slope `theta_t` from the model relating lawyers per capita to legal expense divided by GDP;
+- intercept `delta_t`;
+- 95% confidence intervals for both coefficients;
+- coefficient of determination `R^2`; and
+- sample size `n`.
+
+These values come from `Legal_Economy_Results.csv`. Supplementary Table 3 comes from the affordability trend analysis and is documented in `Scripts/Affordability/README.md`.
+
 ### Notes
 
-- The notebook defaults to `save = 0` for optional figures and the scaling table.
 - HC1 heteroskedasticity-robust covariance estimates are used.
+- The yearly figures are displayed for inspection but are not saved to disk.
 - Raw or restricted source data are not redistributed with the repository. Download or obtain them separately and preserve the expected filenames and folder structure.

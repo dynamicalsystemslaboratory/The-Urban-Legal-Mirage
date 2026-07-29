@@ -1,16 +1,23 @@
 # Affordability
 
-Builds the occupational affordability panel and produces the associated trend and rank analyses.
+Builds the occupational affordability panel and reproduces Figure 4, Supplementary Table 3, and Supplementary Figure 7.
 
 ## Execution order
 
-1. **`Extended_Professions_Affordability.ipynb`** — Creates the annual affordability tables, Figure 4, and the 2024 lawyer and pharmacist files.
-2. **`Linear trend analysis of lawyer affordability.nb`** — Uses `Annual_Average_Affordability_All.csv` to estimate occupational time trends.
-3. **`Lawyers_2024_Spearman_Plot.ipynb`** — Uses the two 2024 files to create Supplementary Figure 7.
+1. **`Extended_Professions_Affordability.ipynb`** — Creates the balanced occupational panel, annual affordability summary CSVs, and the 2024 lawyer and pharmacist files.
+2. **`Affordability analysis.nb`** — Uses the two annual summary CSVs to reproduce Figure 4.
+3. **`Linear trend analysis of lawyer affordability.nb`** — Uses the annual average affordability CSV to estimate the trends reported in Supplementary Table 3.
+4. **`Lawyers_2024_Spearman_Plot.ipynb`** — Uses the two 2024 files to create Supplementary Figure 7.
 
-After the first notebook is complete, the Mathematica trend analysis and the Spearman plotting notebook are independent and may be run in either order.
+After the first notebook is complete, the three downstream analyses are independent and may be run in any order.
 
-## Code documentation
+## Output mapping
+
+| Publication item | Code | Source data |
+|---|---|---|
+| Figure 4 | `Affordability analysis.nb` | `Annual_Average_Affordability_All.csv` and `Annual_Affordability_Spearman_All.csv` |
+| Supplementary Table 3 | `Linear trend analysis of lawyer affordability.nb` | `Annual_Average_Affordability_All.csv` |
+| Supplementary Figure 7 | `Lawyers_2024_Spearman_Plot.ipynb` | 2024 lawyer and pharmacist affordability CSVs |
 
 ## Extended Professions Affordability Analysis
 
@@ -18,24 +25,24 @@ After the first notebook is complete, the Mathematica trend analysis and the Spe
 
 ### Purpose
 
-Constructs a balanced MSA panel of occupational affordability from 2010–2024, measures its relationship with city population, and compares lawyers with other licensed professions.
+Constructs a balanced MSA panel of occupational affordability from 2010–2024, measures its relationship with city population, and creates the summary datasets used by the final figure and table analyses.
 
 ### What the code does
 
 1. Loads annual ACS population files and harmonized BLS occupational tables.
-1. Uses All Occupations as the local wage baseline and defines annual and hourly affordability as the baseline median divided by the profession-specific median.
-1. Builds a profession-specific balanced panel that retains only MSAs observed in every available year.
-1. Calculates population-weighted mean affordability by profession and year.
-1. Calculates annual Spearman correlations between population and affordability.
-1. Filters continuous profession series with more than 150 MSAs for the main trend figure.
-1. Exports 2024 lawyer and pharmacist data for the separate rank-rank figure.
+2. Uses All Occupations as the local wage baseline and defines annual and hourly affordability as the baseline median divided by the profession-specific median.
+3. Builds a profession-specific balanced panel that retains only MSAs observed in every available year.
+4. Calculates population-weighted mean affordability by profession and year.
+5. Calculates annual Spearman correlations between population and affordability, including p-values and MSA counts.
+6. Filters profession series with more than 150 MSAs for the cross-profession analysis.
+7. Exports 2024 lawyer and pharmacist data for the separate rank-rank figure.
 
 ### Required inputs
 
 - `Data/Geography/FIPS/US states FIPS.csv`
 - `Data/Geography/CBSA_shapefile_2025/tl_2025_us_cbsa.shp`
 - Annual ACS files in `Data/Population Data/MSA Population/` for 2010–2019 and 2021–2024
-- Annual `MSA_<year>_Filtered_Extended_Professions.xlsx` files in `Data/Processed Data/Filtered Tables/`
+- Annual `MSA_<year>_Filtered_Extended_Professions.xlsx` files in `Data/Processed Data/Filtered tables/`
 
 ### Outputs
 
@@ -43,7 +50,8 @@ Constructs a balanced MSA panel of occupational affordability from 2010–2024, 
 - `Data/Processed Data/Affordability/Annual_Affordability_Spearman_All.csv`
 - `Data/Processed Data/Affordability/Supplementary_Figure_7_Lawyers_data.csv`
 - `Data/Processed Data/Affordability/Supplementary_Figure_7_Pharmacists_data.csv`
-- `Figures/Figure 4/Figure_4_V1.pdf`
+
+The notebook also contains a Python plotting block for the affordability trends. The final publication version of Figure 4 is assembled in `Affordability analysis.nb` from the exported annual CSVs.
 
 ### Dependencies
 
@@ -54,40 +62,47 @@ Constructs a balanced MSA panel of occupational affordability from 2010–2024, 
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
+Run the notebook from top to bottom in Jupyter. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 
 - The year 2020 is omitted because the required one-year ACS population table is not used.
-- The 2024 lawyer and pharmacist exports contain only population and the annual affordability ratio.
+- The affordability ratio compares the All Occupations median wage with the profession-specific median wage.
 - Raw or restricted source data are not redistributed with the repository. Download or obtain them separately and preserve the expected filenames and folder structure.
 
 ---
 
-## Linear Trend Analysis of Occupational Affordability
+## Figure 4: Affordability Analysis
 
-**Code file:** `Linear trend analysis of lawyer affordability.nb`
+**Code file:** `Affordability analysis.nb`
 
 ### Purpose
 
-Uses Wolfram Mathematica to estimate linear time trends in population-weighted affordability for lawyers and seven comparison professions.
+Creates the final two-panel Figure 4 comparing the time evolution of affordability and its association with city population across lawyers and seven comparison occupations.
 
 ### What the code does
 
-1. Sets the working directory to the notebook directory and imports the annual affordability table.
-1. Filters the data to eight selected professions.
-1. Groups each profession into a year-affordability series.
-1. Fits a separate linear model of affordability on year for each profession.
-1. Extracts slopes, 95% confidence intervals, and slope p-values.
-1. Combines the estimates into a results table and applies the Benjamini–Hochberg false-discovery-rate procedure at 0.05.
+1. Sets the working directory to the Mathematica notebook directory.
+2. Imports `Annual_Affordability_Spearman_All.csv` and `Annual_Average_Affordability_All.csv`.
+3. Retains occupations with more than 150 MSAs and selects the eight professions shown in Figure 4.
+4. Builds panel **a**, the population-weighted average affordability ratio by year.
+5. Builds panel **b**, the annual Spearman correlation between city population and affordability.
+6. Uses filled markers for correlations with `p < 0.05` and open markers for correlations with `p >= 0.05`.
+7. Marks the omitted 2020 observation with a vertical reference line.
 
 ### Required inputs
 
-- `Annual_Average_Affordability_All.csv` placed in the same directory as the Mathematica notebook
+Place these files in the same directory as the Mathematica notebook:
+
+- `Annual_Average_Affordability_All.csv`
+- `Annual_Affordability_Spearman_All.csv`
+
+Both are generated by `Extended_Professions_Affordability.ipynb`.
 
 ### Outputs
 
-- Results are displayed and stored as Mathematica objects in the notebook; the notebook does not export a separate file.
+- Figure 4 is displayed in the Mathematica notebook.
+- The notebook does not automatically export a figure file; export the final graphic from Mathematica when needed.
 
 ### Dependencies
 
@@ -95,17 +110,53 @@ Uses Wolfram Mathematica to estimate linear time trends in population-weighted a
 
 ### How to run
 
-Place `Annual_Average_Affordability_All.csv` beside the notebook, open the notebook in Mathematica, and evaluate the cells from top to bottom.
-
-### Notes
-
-- The eight professions are explicitly listed in the notebook.
-- The input CSV is generated by `Extended_Professions_Affordability.ipynb`.
-- Raw or restricted source data are not redistributed with the repository. Download or obtain them separately and preserve the expected filenames and folder structure.
+Copy the two annual CSVs beside the notebook, open `Affordability analysis.nb`, and evaluate the cells from top to bottom.
 
 ---
 
-## 2024 Affordability Rank Comparison
+## Supplementary Table 3: Linear Trends in Occupational Affordability
+
+**Code file:** `Linear trend analysis of lawyer affordability.nb`
+
+### Purpose
+
+Estimates the linear time trends reported in Supplementary Table 3 for lawyers and seven comparison professions.
+
+### What the code does
+
+1. Sets the working directory to the notebook directory and imports the annual average affordability table.
+2. Filters the data to the eight professions shown in Figure 4 and Supplementary Table 3.
+3. Groups each profession into a year-affordability series.
+4. Fits a separate linear model of population-weighted affordability on year for each profession.
+5. Extracts the slope, 95% confidence interval, slope p-value, and number of yearly observations.
+6. Applies the Benjamini–Hochberg false-discovery-rate procedure at 0.05 as an additional multiple-testing check.
+
+### Required inputs
+
+Place this file in the same directory as the Mathematica notebook:
+
+- `Annual_Average_Affordability_All.csv`
+
+### Outputs
+
+- Mathematica results used to typeset Supplementary Table 3: occupation, linear trend coefficient, 95% confidence interval, p-value, and sample size.
+- The notebook does not export a separate CSV.
+
+### Dependencies
+
+- `Wolfram Mathematica 14.1 or a compatible version`
+
+### How to run
+
+Copy `Annual_Average_Affordability_All.csv` beside the notebook, open it in Mathematica, and evaluate the cells from top to bottom.
+
+### Important distinction
+
+Supplementary Table 3 is derived from the annual affordability data. It is not derived from `Legal_Economy_Results.csv`; that file supplies Supplementary Table 4.
+
+---
+
+## Supplementary Figure 7: 2024 Affordability Rank Comparison
 
 **Code file:** `Lawyers_2024_Spearman_Plot.ipynb`
 
@@ -116,11 +167,11 @@ Creates the two-panel 2024 population-rank versus affordability-rank comparison 
 ### What the code does
 
 1. Loads the two 2024 affordability files generated by `Extended_Professions_Affordability.ipynb`.
-1. Removes missing, infinite, zero, and negative observations.
-1. Ranks both population and affordability from largest to smallest, so rank 1 is the largest value.
-1. Computes the Spearman correlation for each occupation.
-1. Plots the appropriate perfect-agreement or perfect-reversal reference line according to the correlation sign.
-1. Labels the minimum, midpoint, and maximum rank values on both axes.
+2. Removes missing, infinite, zero, and negative observations.
+3. Ranks both population and affordability from largest to smallest, so rank 1 is the largest value.
+4. Computes the Spearman correlation for each occupation.
+5. Plots the appropriate perfect-agreement or perfect-reversal reference line according to the correlation sign.
+6. Labels the minimum, midpoint, and maximum rank values on both axes.
 
 ### Required inputs
 
@@ -141,7 +192,7 @@ Creates the two-panel 2024 population-rank versus affordability-rank comparison 
 
 ### How to run
 
-Run the notebook from top to bottom in Jupyter after placing the required files in the paths listed below. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
+Run the notebook from top to bottom in Jupyter. Run it from within the repository; the notebook locates the repository root automatically by searching the current directory and its parents for the `Scripts` folder.
 
 ### Notes
 

@@ -23,7 +23,7 @@ Processes the three raw Bright Data lawyer snapshots into the MSA-level lawyer m
 
 The three `snap_mi504g7pxmrn977ah.[#].csv` files contain the following columns relating to the Martindale lawyer profiles. These raw snapshots are upstream inputs used to construct the processed lawyer dataset; they are not read directly by the affordability notebooks.
 
-The column names below are reproduced exactly as they appear in the raw files, including their original spelling:
+The column names below are reproduced exactly as they appear in the raw files (spelling errors are in original source):
 
 ```text
 url

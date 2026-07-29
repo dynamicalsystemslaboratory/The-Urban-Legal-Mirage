@@ -352,7 +352,7 @@ Panel **a** shows the population-weighted average affordability ratio for lawyer
 
 ### Supplementary Table 3: occupational affordability trends
 
-Supplementary Table 3 is **not** derived from `Legal_Economy_Results.csv`. It is produced from:
+Supplementary Table 3 is derived from:
 
 ```text
 Data/Processed Data/Affordability/Annual_Average_Affordability_All.csv

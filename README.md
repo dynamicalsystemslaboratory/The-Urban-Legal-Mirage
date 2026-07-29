@@ -337,7 +337,9 @@ Run in this order:
 
 The second notebook saves `Data/Processed Data/Legal-Economy-Coupling/Legal_Economy_Results.csv`, which contains the annual slope, intercept, confidence intervals, coefficient of determination, and sample size used in Supplementary Table 4. It also displays the yearly diagnostic figures without requiring figure-file export.
 
-## Figure 4 and Supplementary Tables 3–4
+## Key output provenance: Figure 4 and Supplementary Tables 3–4
+
+The following section clarifies the source files and scripts used to reproduce Figure 4 and Supplementary Tables 3–4.
 
 ### Figure 4: affordability across licensed professions
 

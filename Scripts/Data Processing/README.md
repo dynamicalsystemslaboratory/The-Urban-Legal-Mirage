@@ -19,6 +19,79 @@ The two notebooks produce different processed inputs. The lawyer pipeline is lis
 
 Processes the three raw Bright Data lawyer snapshots into the MSA-level lawyer master, the 1-over-N normalized specialty master, and firm-address statistics used throughout the paper.
 
+### Raw Bright Data source structure
+
+The three `snap_mi504g7pxmrn977ah.[#].csv` files contain the following columns relating to the Martindale lawyer profiles. These raw snapshots are upstream inputs used to construct the processed lawyer dataset; they are not read directly by the affordability notebooks.
+
+The column names below are reproduced exactly as they appear in the raw files, including their original spelling:
+
+```text
+url
+address
+admission
+areas_of_practice
+isln
+law_school_attended
+location
+name
+practice_count
+type
+university_attended
+year_of_first_admission
+filial
+people
+awards
+profile_peer_review_count
+profile_peer_review_star
+profile_peer_review_awards
+fax
+languages
+mailing_address
+office_hours
+office_size
+phone
+photo
+profile_peer_review_detail
+profile_visibility
+video_call
+website
+biography
+birth_information
+memberships
+hobbies_interests
+profile_client_recomendation_count
+profile_client_recomendation_rating
+profile_client_review_count
+profile_client_review_detail
+profile_client_review_list
+profile_client_review_rating
+clients
+clients2
+year_established
+about
+payment_information
+state_bar_summary
+transactions
+minority_owned
+phone_cell
+phone_telecopier
+company
+```
+### Bright Data columns used
+
+Although the raw Bright Data snapshots contain many Martindale profile fields, the processing pipeline uses only the following five columns:
+
+| Column | Use in the pipeline |
+|---|---|
+| `url` | Serves as the unique lawyer-profile identifier (`lawyer_id`). |
+| `mailing_address` | Primary field used to extract the lawyer’s five-digit ZIP code. |
+| `address` | First fallback field when a ZIP code cannot be extracted from `mailing_address`. |
+| `location` | Second fallback field when a ZIP code cannot be extracted from either address field. |
+| `areas_of_practice` | Used to assign each lawyer to one or more legal-practice categories through the specialty crosswalk. |
+
+The remaining profile fields, including the lawyer’s name, admission history, education, reviews, contact information, and biography, are not used in the lawyer-count aggregation or downstream analyses.
+
+
 ### What the code does
 
 1. Checks all required raw files and creates the output directory.

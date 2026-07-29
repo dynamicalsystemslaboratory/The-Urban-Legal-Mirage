@@ -70,6 +70,67 @@ Run the notebook from top to bottom in Jupyter after placing the required files 
 
 Builds the 2024 MSA criminal-defense demand proxy by combining NIBRS Group A incidents and arrests with Group B arrest records and normalized criminal-defense lawyer supply.
 
+### Data sourcing
+
+The crime proxy combines **Group A incidents and arrests** from the FBI Crime Data Explorer state files with **Group B arrests** from Jacob Kaplan’s concatenated NIBRS files.
+
+#### Group A incidents and arrests
+
+The Group A data are obtained from the **2024 Crime Incident-Based Data by State** downloads available through the FBI Crime Data Explorer:
+
+https://cde.ucr.cjis.gov/LATEST/webapp/#/pages/downloads
+
+To prepare these data:
+
+1. Download the 2024 Crime Incident-Based Data archive for each state.
+2. Unzip each downloaded archive.
+3. Keep the resulting state folders and their contents unchanged.
+4. Create a folder named `Crime24` on the Desktop.
+5. Place all extracted state folders inside `Crime24`.
+
+The expected directory structure is:
+
+```text
+~/Desktop/Crime24/
+├── AL-2024/
+├── AK-2024/
+├── AZ-2024/
+├── ...
+└── WY-2024/
+```
+Each state folder must contain the files used by the notebook, including:
+
+`agencies.csv`
+`NIBRS_incident.csv`
+`NIBRS_ARRESTEE.csv`
+
+By default, `Crime_Proxy_Normalized.ipynb` searches ~/Desktop/Crime24/ for folders ending in -2024. If the state folders are stored elsewhere, update the CRIME_DIR path near the beginning of the notebook.
+
+#### Group B arrests
+
+Group B arrests are obtained from Jacob Kaplan’s Concatenated Files: National Incident-Based Reporting System (NIBRS) Data, 1991–2024, available through openICPSR:
+
+https://www.openicpsr.org/openicpsr/project/118281
+
+Download the archive named:
+
+`group_b_arrest_report_segment_csv_1991_2024.zip`
+
+The notebook supports either of the following arrangements:
+
+Place the complete ZIP archive in:
+~/Downloads/group_b_arrest_report_segment_csv_1991_2024.zip
+
+The notebook will open the archive directly and read:
+
+`nibrs_group_b_arrest_report_segment_2024.csv`
+Alternatively, extract the 2024 CSV and place it in:
+`Data/Proxies/Crime/nibrs_group_b_arrest_report_segment_2024.csv`
+
+When the extracted CSV is present in the repository data folder, the notebook uses it instead of the ZIP archive.
+
+The notebook maps Group A records to metropolitan areas using the agency information supplied in the state downloads. It maps Group B records using the reporting agency’s ORI, removes duplicate arrest records, and adds the Group B arrest count to the Group A arrest count to obtain the total number of arrests used in the crime proxy.
+
 ### What the code does
 
 1. Loads agency metadata from each state folder and builds agency-ID and ORI-to-MSA lookup tables.

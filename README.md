@@ -163,7 +163,7 @@ The introductory ABA analysis requires:
 Data/Introduction/aba_county_lawyers.csv
 Data/Population Data/County Population/co-est2019-alldata.csv
 ```
-The `aba_county_lawyers.csv` was obtained by manually collecting county-level lawyer counts from the ABA Profile of the Legal Profession 2020, available at https://www.americanbar.org/content/dam/aba/administrative/news/2020/07/potlp2020.pdf. After running `Scripts/Introduction/ABA_Data_Extraction.ipynb`, the resulting CSV, `aba_county_lawyers_intro.csv`, contains the county-level lawyer counts and corresponding MSA population, used to identify legal deserts based on ABA classification. 
+The `aba_county_lawyers.csv` was obtained by manually collecting county-level lawyer counts from the ABA Profile of the Legal Profession 2020, available at https://www.americanbar.org/content/dam/aba/administrative/news/2020/07/potlp2020.pdf. After running `Scripts/Introduction/ABA_Data_Extraction.ipynb`, the resulting CSV, the resulting CSV, `aba_county_lawyers_intro.csv`, contains the county-level lawyer counts and corresponding 2019 county population, used to identify counties below the lawyer-density threshold applied in the paper.
 
 "_The raw numbers portray two disparate realities of Americans living even within the same state: Just as 40% of U.S. counties fall below the proposed threshold, about 1% exceed it by a factor of ten or more._"
 
@@ -316,9 +316,7 @@ It generates the following files:
 * `Annual_Average_Affordability_All.csv`, data used to generate Panel a. of Figure 4, and Supplementary Table 3
 * `Annual_Affordability_Spearman_All.csv`, data used to generate Panel b. of Figure 4
   
-To generate Figure 4, copy `Annual_Average_Affordability_All.csv` and `Annual_Affordability_Spearman_All.csv` to Scripts/Affordability.
-
-Copy the `Annual_Average_Affordability_All.csv` and `Annual_Affordability_Spearman_All.csv` files into the same folder with:
+To generate Figure 4, copy `Annual_Average_Affordability_All.csv` and `Annual_Affordability_Spearman_All.csv` into `Scripts/Affordability/` in the same folder as:
 
 ```text
 Scripts/Affordability/Affordability analysis.nb

@@ -334,19 +334,19 @@ It generates the following files:
 * `Annual_Average_Affordability_All.csv`, data used to generate Panel a. of Figure 4, and Supplementary Table 3
 * `Annual_Affordability_Spearman_All.csv`, data used to generate Panel b. of Figure 4
   
-To generate Figure 4, copy Annual_Average_Affordability_All.csv and Annual_Affordability_Spearman_All.csv into Scripts/Affordability/, where they can be accessed by:
+To generate Figure 4, copy `Annual_Average_Affordability_All.csv` and `Annual_Affordability_Spearman_All.csv` into `Scripts/Affordability/`, where they can be accessed by:
 
-Scripts/Affordability/Affordability analysis.nb
+`Scripts/Affordability/Affordability analysis.nb`
 
-To create Supplementary Table 3, evaluate Scripts/Affordability/Linear trend analysis of lawyer affordability.nb. This analysis uses Annual_Average_Affordability_All.csv, not Legal_Economy_Results.csv.
+To create Supplementary Table 3, evaluate `Scripts/Affordability/Linear trend analysis of lawyer affordability.nb`. This analysis uses `Annual_Average_Affordability_All.csv`, not `Legal_Economy_Results.csv`.
 
 To create Supplementary Figure 7, run:
 
-Scripts/Affordability/Lawyers_2024_Spearman_Plot.ipynb
+`Scripts/Affordability/Lawyers_2024_Spearman_Plot.ipynb`
 
-This notebook reads Supplementary_Figure_7_Lawyers_data.csv and Supplementary_Figure_7_Pharmacists_data.csv directly from Data/Processed Data/Affordability/. It saves the completed figure as:
+This notebook reads `Supplementary_Figure_7_Lawyers_data.csv` and `Supplementary_Figure_7_Pharmacists_data.csv` directly from `Data/Processed Data/Affordability/`. It saves the completed figure as:
 
-Figures/Supplementary Figure 7/Supplementary_Figure_7.pdf
+`Figures/Supplementary Figure 7/Supplementary_Figure_7.pdf`
 
 After the four affordability CSVs have been created, the analyses for Figure 4, Supplementary Table 3, and Supplementary Figure 7 are independent and may be run in any order.
 

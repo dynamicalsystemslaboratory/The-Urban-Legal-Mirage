@@ -295,7 +295,7 @@ The first notebook creates `Data/Processed Data/sanity_check_data.csv`; the seco
 
 ### 7. Build the six demand proxies
 
-After the normalized lawyer master exists, run these six notebooks in any order:
+After the normalized lawyer master csv is generated, run these six notebooks in any order:
 
 1. `Scripts/Proxies/Bankruptcy_Proxy_Normalized.ipynb`
 2. `Scripts/Proxies/Crime_Proxy_Normalized.ipynb`

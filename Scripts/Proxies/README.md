@@ -46,7 +46,8 @@ Builds the MSA-level bankruptcy-law supply and demand table using 2024 bankruptc
 We obtain the data by downloading "Table F-5A— Bankruptcy Filings (December 31, 2024)" from https://www.uscourts.gov/data-news/data-tables/2024/12/31/bankruptcy-filings/f-5a. We follow by manually cleaning the data, keeping only the Table F-5A sheet, removing its first row, which includes the file description, and its last row, which includes a footnote,  and renaming the headers as follows: 
 
 ```text
-Circuit, District, and County	County Code,
+Circuit, District, and County,
+County Code,
 Total All Chapters,
 Total Chapter 7,
 Total Chapter 11,

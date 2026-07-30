@@ -362,7 +362,7 @@ Builds the MSA-level real-estate-law supply and demand table using total 2024 Zi
 - `Data/Geography/CBSA_shapefile_2025/tl_2025_us_cbsa.shp`
 
 ### Data sourcing
-We obtain the data by downloading the Zillow `Metro_total_transaction_value_now_uc_sfrcondo_month.csv` data, which appears under the "SALES" subsection, selecting "Total Transaction Value (Nowcast, All Homes, Monthly)" under "Data Type" and "Metro & US" under "Geography" from https://www.zillow.com/research/data/.
+We obtain the data by downloading the Zillow `Metro_total_transaction_value_now_uc_sfrcondo_month.csv` data, which appears under the "SALES" subsection, selecting "Total Transaction Value (Nowcast, All Homes, Monthly)" under "Data Type" and "Metro & US" under "Geography" from https://www.zillow.com/research/data/. We note that Zillow occasionally updates historical data, as stated on their website; thus, data may change slightly over time. We sourced the data on July 9, 2026.
 
 ### Outputs
 

@@ -41,6 +41,30 @@ Builds the MSA-level bankruptcy-law supply and demand table using 2024 bankruptc
 - `Data/Geography/CBSA_shapefile_2025/tl_2025_us_cbsa.shp`
 - `Data/Geography/FIPS/US states FIPS.csv`
 
+### Data sourcing
+
+We obtain the data by downloading "Table F-5A— Bankruptcy Filings (December 31, 2024)" from https://www.uscourts.gov/data-news/data-tables/2024/12/31/bankruptcy-filings/f-5a. We follow by manually cleaning the data, keeping only the Table F-5A sheet, removing its first row, which includes the file description, and its last row, which includes a footnote,  and renaming the headers as follows: 
+
+```text
+Circuit, District, and County	County Code,
+Total All Chapters,
+Total Chapter 7,
+Total Chapter 11,
+Total Chapter 13,
+Total Other Chapters,
+All Chapters (Business),
+Chapter 7 (Business),
+Chapter 11 (Business),
+Chapter 13 (Business),
+Other Chapters (Business),
+All Chapters,
+Chapter 7,
+Chapter 11,
+Chapter 13,
+```
+The header row must be the first row of the worksheet. The cleaned file should be saved as `bf_f5a_1231.2024_clean.xlsx`. We clean this data for better compatibility with Python.
+
+The `qcew-county-msa-csa-crosswalk-clean.xlsx` crosswalk needs to be stored in `Data/Geography/Crosswalks/`.
 ### Outputs
 
 - `Data/Proxies/Bankruptcy/Bankruptcy_Proxy_Normalized.csv`
@@ -116,6 +140,8 @@ Download the archive named:
 
 `group_b_arrest_report_segment_csv_1991_2024.zip`
 
+Downloading the file requires registration with openICPSR.
+
 The notebook supports either of the following arrangements:
 
 Place the complete ZIP archive in:
@@ -185,12 +211,16 @@ Builds the MSA-level family-law supply and demand table using the number of divo
 1. Extracts five-digit CBSA codes and keeps valid MSAs.
 1. Merges normalized Family Law lawyer supply and removes missing supply observations.
 
+
 ### Required inputs
 
 - `Data/Proxies/Family/ACSDT1Y2010.B12503-Data.csv`
 - `Data/BrightData_Lawyers/BrightData_Lawyers_master_normalized_1overN.csv`
 - `Data/Geography/CBSA_shapefile_2025/tl_2025_us_cbsa.shp`
 - `Data/Geography/FIPS/US states FIPS.csv`
+
+### Data sourcing
+We obtain the data by downloading the ACS "B12503DIVORCES IN THE LAST YEAR BY SEX BY MARITAL STATUS FOR THE POPULATION 15 YEARS AND OVER" table for 2010 from https://data.census.gov/table/ACSDT1Y2010.B12503?q=B12503&g=010XX00US$3100000. The file is then unzipped and transferred to the designated folder, `Data/Proxies/Family/`.
 
 ### Outputs
 
@@ -235,6 +265,9 @@ Builds the MSA-level immigration-law supply and demand table using 2024 foreign-
 - `Data/Geography/CBSA_shapefile_2025/tl_2025_us_cbsa.shp`
 - `Data/Geography/FIPS/US states FIPS.csv`
 
+### Data sourcing
+We obtain the data by downloading the ACS "DP02 Selected Social Characteristics in the United States" table for 2024 from https://data.census.gov/table/ACSDP1Y2024.DP02?q=DP02&g=010XX00US$3100000. The file is then unzipped and transferred to the designated folder, `Data/Proxies/Immigration/`.
+
 ### Outputs
 
 - `Data/Proxies/Immigration/Immigration_Proxy_Normalized.csv`
@@ -277,6 +310,11 @@ Builds the MSA-level intellectual-property-law supply and demand table using 201
 - `Data/BrightData_Lawyers/BrightData_Lawyers_master_normalized_1overN.csv`
 - `Data/Geography/CBSA_shapefile_2025/tl_2025_us_cbsa.shp`
 - `Data/Geography/FIPS/US states FIPS.csv`
+
+### Data sourcing
+The file `Patents 2000-2015.csv` contains publicly released data on the number of granted patents across U.S. MSAs between 2000 and 2015. The data were obtained from the United States Patent and Trademark Office (USPTO). It is included here to preserve the exact input data used to construct the intellectual property cases proxy, because the original file is no longer available at its former USPTO URL: https://www.uspto.gov/web/offices/ac/ido/oeip/taf/reports_cbsa.htm, which we accessed on December 15, 2015.
+
+Inclusion of these data does not imply endorsement by the United States Patent and Trademark Office (USPTO). The USPTO states that most U.S. government-produced materials are in the public domain and that public-domain information may be freely distributed and copied. Accordingly, this USPTO dataset may be included in this repository. The repository’s software license applies only to the code created by the authors and does not alter the legal status of the underlying USPTO data. USPTO Terms of Use: https://www.uspto.gov/terms-use-uspto-websites.
 
 ### Outputs
 
@@ -321,6 +359,9 @@ Builds the MSA-level real-estate-law supply and demand table using total 2024 Zi
 - `Data/Proxies/Real Estate/Metro_total_transaction_value_now_uc_sfrcondo_month.csv`
 - `Data/BrightData_Lawyers/BrightData_Lawyers_master_normalized_1overN.csv`
 - `Data/Geography/CBSA_shapefile_2025/tl_2025_us_cbsa.shp`
+
+### Data sourcing
+We obtain the data by downloading the Zillow `Metro_total_transaction_value_now_uc_sfrcondo_month.csv` data, which appears under the "SALES" subsection, selecting "Total Transaction Value (Nowcast, All Homes, Monthly)" under "Data Type" and "Metro & US" under "Geography" from https://www.zillow.com/research/data/.
 
 ### Outputs
 

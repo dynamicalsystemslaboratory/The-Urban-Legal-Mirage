@@ -9,7 +9,7 @@ There are two practical ways to use the repository:
 1. **Full reconstruction from raw data.** Start with the three raw Bright Data lawyer snapshots and all geographic, occupational, population, and proxy source files. Run the complete pipeline in the order below.
 2. **Downstream analysis from processed data.** Start with the processed lawyer master tables and harmonized BLS tables, then run only the analysis folders needed for a particular figure or result.
 
-The raw Bright Data snapshots and other licensed, restricted, or very large source files are not redistributed in this repository. Full reconstruction therefore requires independent access to those files. When processed core files are available, most downstream analyses can be reproduced without rerunning the raw lawyer pipeline.
+The three raw Bright Data lawyer snapshots are redistributed in this repository as `Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip` with permission from Bright Data. Extract the archive in place before running the lawyer pipeline. Other licensed, restricted, or very large source files are not redistributed and must be obtained separately. When processed core files are available, most downstream analyses can be reproduced without rerunning the raw lawyer pipeline.
 
 ## Repository structure
 
@@ -78,45 +78,54 @@ Paths may be case-sensitive. In particular, use:
 Data/Processed Data/Filtered tables
 ```
 
-The raw lawyer pipeline and the crime proxy notebook read some large external files from locations under the user’s home directory. Edit their configuration variables when the files are stored elsewhere:
+The lawyer pipeline uses repository-relative paths. Its Bright Data inputs are expected under `Data/BrightData_Lawyers/`, while the geographic crosswalks are expected under `Data/Geography/Crosswalks/`.
 
-- `Lawyer_Paper_Complete_Pipeline.ipynb`: raw snapshots and crosswalks are read from `~/Downloads/` by default.
+The crime proxy notebook is the main exception and still reads large external files from locations under the user's home directory:
+
 - `Crime_Proxy_Normalized.ipynb`: state NIBRS folders are read from `~/Desktop/Crime24/`, and the Group B archive is read from `~/Downloads/` unless an extracted repository CSV is supplied.
 
 ## Core input data
 
 ### Lawyer processing inputs
 
-The complete lawyer pipeline expects the following files in `~/Downloads/` unless its configuration is changed:
+The complete lawyer pipeline uses repository-relative paths. Before running `Lawyer_Paper_Complete_Pipeline.ipynb`, the following files should be available:
 
 ```text
-snap_mi504g7pxmrn977ah.1.csv
-snap_mi504g7pxmrn977ah.2.csv
-snap_mi504g7pxmrn977ah.3.csv
-ZIP_CBSA_122024.xlsx
-qcew-county-msa-csa-crosswalk-clean.xlsx
-brightdata_practice_area_to_12_crosswalk_90pct.csv
+Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip
+Data/BrightData_Lawyers/brightdata_practice_area_to_12_crosswalk_90pct.csv
+Data/Geography/Crosswalks/qcew-county-msa-csa-crosswalk-clean.xlsx
+Data/Geography/Crosswalks/ZIP_CBSA_122024.xlsx
 ```
-The first three files were obtained from Bright Data and contain all the individual lawyer profiles. These datasets are confidential and cannot be shared herein. 
 
+The first three items are provided with the repository. `BrightData_Lawyer_Snapshots.zip` contains the three raw Bright Data lawyer snapshots. Extract the archive directly inside `Data/BrightData_Lawyers/` so that the folder contains:
 
-`ZIP_CBSA_122024.xlsx` is the HUD-USPS ZIP Code Crosswalk File published by the U.S. Department of Housing and Urban Development (HUD), which allocates USPS ZIP Codes to CBSAs, and can be obtained here: https://www.huduser.gov/portal/datasets/usps_crosswalk.html. The downloaded crosswalk file is named "ZIP-CBSA_122024" and should be renamed to "ZIP_CBSA_122024". Newer versions of this crosswalk may contain new headers. For reproducibility, please follow the following headers' naming scheme:
-* "ZIP" -  5 digit USPS ZIP code
-* "CBSA" - 5 digit CBSA code for Micropolitan and Metropolitan Areas as defined by OMB in February of 2013. ZIP codes with a CBSA code of ‘99999’ are not located within a CBSA. 
-* "USPS_ZIP_PREF_CITY" - USPS preferred city name
-* "USPS_ZIP_PREF_STATE" - USPS preferred state address state
-* "RES_RATIO" - The ratio of residential addresses in the ZIP – Tract, County, or CBSA part to the total number of residential addresses in the entire ZIP.
-* "BUS_RATIO" - The ratio of business addresses in the ZIP – Tract, County, or CBSA part to the total number of business addresses in the entire ZIP.
-* "OTH_RATIO" - The ratio of other addresses in the ZIP – Tract, County, or CBSA part to the total number of other addresses in the entire ZIP.
-* "TOT_RATIO" - The ratio of all addresses in the ZIP – Tract, County, or CBSA part to the total number of all types of addresses in the entire ZIP.
+```text
+Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.1.csv
+Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.2.csv
+Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.3.csv
+Data/BrightData_Lawyers/brightdata_practice_area_to_12_crosswalk_90pct.csv
+```
 
-The definitions above are taken directly from HUD documentation section: https://www.huduser.gov/portal/datasets/usps_crosswalk.html
+The three raw snapshots were obtained from Bright Data and contain the individual Martindale lawyer profiles used to construct the lawyer master datasets. They are redistributed here with permission from Bright Data.
 
-To download, one has to register on the HUD website (link provided in the webpage above). After registering, one should select ZIP-CBSA for "Crosswalk Type" and 4th Quarter 2024 under "Select Data Year and Quarter." 
+`ZIP_CBSA_122024.xlsx` is the HUD-USPS ZIP Code Crosswalk File published by the U.S. Department of Housing and Urban Development (HUD), which allocates USPS ZIP Codes to CBSAs, and can be obtained here: https://www.huduser.gov/portal/datasets/usps_crosswalk.html. The downloaded crosswalk file is named "ZIP-CBSA_122024" and should be renamed to `ZIP_CBSA_122024.xlsx` and placed in `Data/Geography/Crosswalks/`. Newer versions of this crosswalk may contain new headers. For reproducibility, please follow the following headers' naming scheme:
 
-`qcew-county-msa-csa-crosswalk-clean.xlsx` is the BLS' county to CBSA Crosswalk File, which maps counties to corresponding CBSAs. The raw crosswalk can be obtained by clicking "COUNTY-MSA-CSA CROSSWALKS: XLSX" in: https://www.bls.gov/cew/classifications/areas/county-msa-csa-crosswalk.htm. Our cleaned crosswalk, `qcew-county-msa-csa-crosswalk-clean.xlsx`, is obtained by removing the unnecessary sheets from the downloaded file, named qcew-county-msa-csa-crosswalk.xlsx, and keeping only the "Jul. 2023 Crosswalk" sheet.
+- "ZIP" - 5 digit USPS ZIP code
+- "CBSA" - 5 digit CBSA code for Micropolitan and Metropolitan Areas as defined by OMB in February of 2013. ZIP codes with a CBSA code of ‘99999’ are not located within a CBSA.
+- "USPS_ZIP_PREF_CITY" - USPS preferred city name
+- "USPS_ZIP_PREF_STATE" - USPS preferred state address state
+- "RES_RATIO" - The ratio of residential addresses in the ZIP – Tract, County, or CBSA part to the total number of residential addresses in the entire ZIP.
+- "BUS_RATIO" - The ratio of business addresses in the ZIP – Tract, County, or CBSA part to the total number of business addresses in the entire ZIP.
+- "OTH_RATIO" - The ratio of other addresses in the ZIP – Tract, County, or CBSA part to the total number of other addresses in the entire ZIP.
+- "TOT_RATIO" - The ratio of all addresses in the ZIP – Tract, County, or CBSA part to the total number of all types of addresses in the entire ZIP.
 
-`brightdata_practice_area_to_12_crosswalk_90pct.csv` is the crosswalk that maps Martindale's listed areas of practice to lawyer specializations. This crosswalk was manually created by us for the purposes of this paper and is not an official or endorsed crosswalk from Martindale. The crosswalk is located in `Scripts/Data Processing/` and should be downloaded before running `Lawyer_Paper_Complete_Pipeline.ipynb`.
+The definitions above are taken directly from the HUD documentation: https://www.huduser.gov/portal/datasets/usps_crosswalk.html
+
+To download the file, register on the HUD website, select ZIP-CBSA for "Crosswalk Type," and select 4th Quarter 2024 under "Select Data Year and Quarter."
+
+`qcew-county-msa-csa-crosswalk-clean.xlsx` is the BLS county-to-CBSA Crosswalk File, which maps counties to corresponding CBSAs. The raw crosswalk can be obtained by clicking "COUNTY-MSA-CSA CROSSWALKS: XLSX" at https://www.bls.gov/cew/classifications/areas/county-msa-csa-crosswalk.htm. The cleaned crosswalk provided in `Data/Geography/Crosswalks/` was created by removing the unnecessary sheets from the downloaded `qcew-county-msa-csa-crosswalk.xlsx` file and keeping only the "Jul. 2023 Crosswalk" sheet.
+
+`brightdata_practice_area_to_12_crosswalk_90pct.csv` maps Martindale's listed areas of practice to lawyer specializations. This crosswalk was manually created for the purposes of this paper and is not an official or endorsed crosswalk from Martindale. It is provided in `Data/BrightData_Lawyers/`.
 
 The pipeline, `Lawyer_Paper_Complete_Pipeline.ipynb`, produces the three core files used throughout the repository:
 
@@ -137,13 +146,14 @@ Data/Geography/State_shapefile_2025/tl_2025_us_state.shp
 Data/Population Data/MSA Population/ACSDT1Y<year>.B01003-Data.csv
 Data/Population Data/County Population/co-est2019-alldata.csv
 ```
+
 The first file includes US states Federal Information Processing System (FIPS) codes and is provided in `Data/Geography/FIPS/US states FIPS.csv`.
 
-Each shapefile folder should include all shapefile components, including `.shp` and the corresponding `.dbf`, `.shx`, and `.prj` files. All shapefiles can be downloaded from the TIGER/Line® Shapefiles web interface: https://www.census.gov/cgi-bin/geo/shapefiles/index.php. To obtain the CBSA shapefiles, one should select 2025 and Core Based Statistical Areas under "Select year" and "Select a layer type," respectively, click submit, and then select "Metropolitan/Micropolitan Statistical Area." To obtain the States shapefiles, one should follow the same steps, selecting States (and equivalent) under "Select a layer type." All files need to be unzipped, taken from the folder, and placed into the corresponding Data/Geography folder (CBSA_shapefile_2025 and State_shapefile_2025, see directory structure above).
+Each shapefile folder should include all shapefile components, including `.shp` and the corresponding `.dbf`, `.shx`, and `.prj` files. All shapefiles can be downloaded from the TIGER/Line® Shapefiles web interface: https://www.census.gov/cgi-bin/geo/shapefiles/index.php. To obtain the CBSA shapefiles, one should select 2025 and Core Based Statistical Areas under "Select year" and "Select a layer type," respectively, click submit, and then select "Metropolitan/Micropolitan Statistical Area." To obtain the States shapefiles, one should follow the same steps, selecting States (and equivalent) under "Select a layer type." All files need to be unzipped, taken from the folder, and placed into the corresponding Data/Geography folder (`CBSA_shapefile_2025` and `State_shapefile_2025`, see directory structure above).
 
-The annual MSA population series uses 2010–2019 and 2021–2024. The one-year 2020 ACS file is not used. These population estimates can be obtained from the Census Data website: https://data.census.gov/table/ACSDT1Y2024.B01003?q=B01003&g=010XX00US$3100000. All files need to be unzipped, taken from the folder, and placed into the corresponding Data/Population Data/MSA Population folder, see directory structure above).
+The annual MSA population series uses 2010–2019 and 2021–2024. The one-year 2020 ACS file is not used. These population estimates can be obtained from the Census Data website: https://data.census.gov/table/ACSDT1Y2024.B01003?q=B01003&g=010XX00US$3100000. All files need to be unzipped, taken from the folder, and placed into the corresponding `Data/Population Data/MSA Population` folder.
 
-The annual county population series is obtained from the Census Data website: https://www.census.gov/newsroom/press-kits/2020/pop-estimates-county-metro.html. The data can be downloaded by clicking "Population, Population Change, and Estimated Components of Population Change: April 1, 2010 to July 1, 2019 (CO-EST2019-alldata) [CSV]" under the Datasets section. The dataset should be placed into the corresponding Data/Population Data/County Population folder, see directory structure above). The dataset is used in the introduction and is not part of the analysis, see `Scripts/Introduction/ABA_Data_Extraction.ipynb`.
+The annual county population series is obtained from the Census Data website: https://www.census.gov/newsroom/press-kits/2020/pop-estimates-county-metro.html. The data can be downloaded by clicking "Population, Population Change, and Estimated Components of Population Change: April 1, 2010 to July 1, 2019 (CO-EST2019-alldata) [CSV]" under the Datasets section. The dataset should be placed into the corresponding `Data/Population Data/County Population` folder. The dataset is used in the introduction and is not part of the analysis; see `Scripts/Introduction/ABA_Data_Extraction.ipynb`.
 
 ### Occupational and economic inputs
 
@@ -152,17 +162,17 @@ Data/BLS data/Uniform tables/Professional Licensed Occupations.xlsx
 Data/BLS data/Uniform tables/MSA_<year>_Uniform.xlsx
 Data/BLS data/GDP/GDP and Personal Income Formatted.csv
 ```
-Professional Licensed Occupations.xlsx is a crosswalk we created manually detailing changes in SOC codes and occupation titles for licensed professionals over time in the BLS data. The crosswalk was created by manually tracking changes in the licensed, professional occupations, chosen based on the criteria detailed in the paper, across BLS publications in different years. This crosswalk can be found in `Data/BLS Data/Uniform Tables/Professional Licensed Occupations.xlsx`.
 
-We obtain the BLS data for occupations and salary from the BLS website: https://www.bls.gov/oes/tables.htm. MSA_<year>_Uniform.xlsx files are created as follows:
-* For each year, download the zip file associated with "Metropolitan and nonmetropolitan area (XLSX)."
-* Extract the "MSA_<year>_dl" from the zip. If multiple files are available (for earlier years), join them into one file.
-* Harmonize headers of all files across all years to be consistent. The final headers are: AREA_TITLE	AREA_TYPE	PRIM_STATE	NAICS	NAICS_TITLE	I_GROUP	OWN_CODE	OCC_CODE	OCC_TITLE	O_GROUP	TOT_EMP	EMP_PRSE	JOBS_1000	LOC_QUOTIENT	PCT_TOTAL	PCT_RPT	H_MEAN	A_MEAN	MEAN_PRSE	H_PCT10	H_PCT25	H_MEDIAN	H_PCT75	H_PCT90	A_PCT10	A_PCT25	A_MEDIAN	A_PCT75	A_PCT90	ANNUAL	HOURLY
-* Rename files to `MSA_<year>_Uniform.xlsx`, with each year corresponding to a single file.
+`Professional Licensed Occupations.xlsx` is a crosswalk we created manually detailing changes in SOC codes and occupation titles for licensed professionals over time in the BLS data. The crosswalk was created by manually tracking changes in the licensed, professional occupations, chosen based on the criteria detailed in the paper, across BLS publications in different years. This crosswalk can be found in `Data/BLS Data/Uniform Tables/Professional Licensed Occupations.xlsx`.
 
+We obtain the BLS data for occupations and salary from the BLS website: https://www.bls.gov/oes/tables.htm. `MSA_<year>_Uniform.xlsx` files are created as follows:
+
+- For each year, download the zip file associated with "Metropolitan and nonmetropolitan area (XLSX)."
+- Extract the `MSA_<year>_dl` from the zip. If multiple files are available (for earlier years), join them into one file.
+- Harmonize headers of all files across all years to be consistent. The final headers are: AREA_TITLE	AREA_TYPE	PRIM_STATE	NAICS	NAICS_TITLE	I_GROUP	OWN_CODE	OCC_CODE	OCC_TITLE	O_GROUP	TOT_EMP	EMP_PRSE	JOBS_1000	LOC_QUOTIENT	PCT_TOTAL	PCT_RPT	H_MEAN	A_MEAN	MEAN_PRSE	H_PCT10	H_PCT25	H_MEDIAN	H_PCT75	H_PCT90	A_PCT10	A_PCT25	A_MEDIAN	A_PCT75	A_PCT90	ANNUAL	HOURLY
+- Rename files to `MSA_<year>_Uniform.xlsx`, with each year corresponding to a single file.
 
 We use the BEA's MSA-level GDP data, which were available at the time of data collection. BEA subsequently discontinued publication of MSA-level GDP statistics and now publishes GDP estimates only at the county level. The original file was reformatted to be easily read in Python. We provide this file in `Data/BLS Data/GDP/GDP and Personal Income Formatted.csv`.
-
 
 The `Filtering_BLS_Data_Extended_Professions.ipynb` notebook harmonizes the annual occupation tables and writes:
 
@@ -171,14 +181,17 @@ Data/Processed Data/Filtered tables/MSA_<year>_Filtered_Extended_Professions.xls
 ```
 
 ### Additional inputs
+
 ## Introduction
+
 The introductory ABA analysis requires:
 
 ```text
 Data/Introduction/aba_county_lawyers.csv
 Data/Population Data/County Population/co-est2019-alldata.csv
 ```
-The `aba_county_lawyers.csv` was obtained by manually collecting county-level lawyer counts from the ABA Profile of the Legal Profession 2020, available at https://www.americanbar.org/content/dam/aba/administrative/news/2020/07/potlp2020.pdf. After running `Scripts/Introduction/ABA_Data_Extraction.ipynb`, the resulting CSV, the resulting CSV, `aba_county_lawyers_intro.csv`, contains the county-level lawyer counts and corresponding 2019 county population, used to identify counties below the lawyer-density threshold applied in the paper.
+
+The `aba_county_lawyers.csv` was obtained by manually collecting county-level lawyer counts from the ABA Profile of the Legal Profession 2020, available at https://www.americanbar.org/content/dam/aba/administrative/news/2020/07/potlp2020.pdf. After running `Scripts/Introduction/ABA_Data_Extraction.ipynb`, the resulting CSV, `aba_county_lawyers_intro.csv`, contains the county-level lawyer counts and corresponding 2019 county population, used to identify counties below the lawyer-density threshold applied in the paper.
 
 "_The raw numbers portray two disparate realities of Americans living even within the same state: Just as 40% of U.S. counties fall below the proposed threshold, about 1% exceed it by a factor of ten or more._"
 
@@ -264,7 +277,7 @@ This produces `Data/Introduction/aba_county_lawyers_intro.csv` and prints the co
 
 ### 4. Create the national maps
 
-Before running the code, create the output directory for the figure, titled: "Figures/Figure 1".
+The notebook creates `Figures/Figure 1/` automatically if it does not already exist.
 
 Run:
 
@@ -283,7 +296,6 @@ Run in this order:
 
 These notebooks use the lawyer master, 2024 ACS population, CBSA land area, and `Helpers.py`.
 
-
 ### 6. Run the consistency checks
 
 Run in this order:
@@ -295,7 +307,7 @@ The first notebook creates `Data/Processed Data/sanity_check_data.csv`; the seco
 
 ### 7. Build the six demand proxies
 
-After the normalized lawyer master csv is generated, run these six notebooks in any order:
+After the normalized lawyer master CSV is generated, run these six notebooks in any order:
 
 1. `Scripts/Proxies/Bankruptcy_Proxy_Normalized.ipynb`
 2. `Scripts/Proxies/Crime_Proxy_Normalized.ipynb`
@@ -309,7 +321,6 @@ Then run:
 ```text
 Scripts/Proxies/Proxies_Plots.ipynb
 ```
-
 
 ### 8. Run the availability collapse
 
@@ -328,12 +339,14 @@ First run:
 ```text
 Scripts/Affordability/Extended_Professions_Affordability.ipynb
 ```
+
 It generates the following files:
-* `Supplementary_Figure_7_Lawyers_data.csv`, data used to generate Panel a. of Supplementary Figure 7
-* `Supplementary_Figure_7_Pharmacists_data.csv`, data used to generate Panel b. of Supplementary Figure 7
-* `Annual_Average_Affordability_All.csv`, data used to generate Panel a. of Figure 4, and Supplementary Table 3
-* `Annual_Affordability_Spearman_All.csv`, data used to generate Panel b. of Figure 4
-  
+
+- `Supplementary_Figure_7_Lawyers_data.csv`, data used to generate Panel a. of Supplementary Figure 7
+- `Supplementary_Figure_7_Pharmacists_data.csv`, data used to generate Panel b. of Supplementary Figure 7
+- `Annual_Average_Affordability_All.csv`, data used to generate Panel a. of Figure 4 and Supplementary Table 3
+- `Annual_Affordability_Spearman_All.csv`, data used to generate Panel b. of Figure 4
+
 To generate Figure 4, copy `Annual_Average_Affordability_All.csv` and `Annual_Affordability_Spearman_All.csv` into `Scripts/Affordability/`, where they can be accessed by:
 
 `Scripts/Affordability/Affordability analysis.nb`
@@ -378,4 +391,4 @@ The second notebook saves `Data/Processed Data/Legal-Economy-Coupling/Legal_Econ
 - The 1-over-N normalized lawyer master assigns a lawyer with `N` mapped specialties a weight of `1/N` in each specialty.
 - Geographic analysis is restricted to valid metropolitan statistical areas; Micropolitan Statistical Areas, Connecticut MSAs, and Puerto Rico metropolitan areas are excluded where specified by the processing pipeline.
 - Preserve exact filenames and directory names. Several notebooks rely on fixed source filenames even though the repository root itself is detected automatically.
-- Large, private, or licensed raw files are intentionally excluded.
+- The Bright Data lawyer snapshots are redistributed in `BrightData_Lawyer_Snapshots.zip` with permission from Bright Data. Other large, private, licensed, or restricted source files remain excluded unless otherwise documented.

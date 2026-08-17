@@ -21,7 +21,7 @@ Processes the three raw Bright Data lawyer snapshots into the MSA-level lawyer m
 
 ### Raw Bright Data source structure
 
-The three `snap_mi504g7pxmrn977ah.[#].csv` files contain the following columns relating to the Martindale lawyer profiles. These raw snapshots are upstream inputs used to construct the processed lawyer dataset; they are not read directly by the affordability notebooks.
+The three `snap_mi504g7pxmrn977ah.[#].csv` files contain the following columns relating to the Martindale lawyer profiles. They are provided in `Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip`; extract the archive in place before running the pipeline. These raw snapshots are upstream inputs used to construct the processed lawyer dataset; they are not read directly by the affordability notebooks.
 
 The column names below are reproduced exactly as they appear in the raw files (spelling errors are in original source):
 
@@ -77,6 +77,7 @@ phone_cell
 phone_telecopier
 company
 ```
+
 ### Bright Data columns used
 
 Although the raw Bright Data snapshots contain many Martindale profile fields, the processing pipeline uses only the following five columns:
@@ -84,13 +85,12 @@ Although the raw Bright Data snapshots contain many Martindale profile fields, t
 | Column | Use in the pipeline |
 |---|---|
 | `url` | Serves as the unique lawyer-profile identifier (`lawyer_id`). |
-| `mailing_address` | Primary field used to extract the lawyer’s five-digit ZIP code. |
+| `mailing_address` | Primary field used to extract the lawyer's five-digit ZIP code. |
 | `address` | First fallback field when a ZIP code cannot be extracted from `mailing_address`. |
 | `location` | Second fallback field when a ZIP code cannot be extracted from either address field. |
 | `areas_of_practice` | Used to assign each lawyer to one or more legal-practice categories through the specialty crosswalk. |
 
-The remaining profile fields, including the lawyer’s name, admission history, education, reviews, contact information, and biography, are not used in the lawyer-count aggregation or downstream analyses.
-
+The remaining profile fields, including the lawyer's name, admission history, education, reviews, contact information, and biography, are not used in the lawyer-count aggregation or downstream analyses.
 
 ### What the code does
 
@@ -106,10 +106,23 @@ The remaining profile fields, including the lawyer’s name, admission history, 
 
 ### Required inputs
 
-- In `~/Downloads/`: `snap_mi504g7pxmrn977ah.1.csv`, `.2.csv`, and `.3.csv`
-- In `~/Downloads/`: `ZIP_CBSA_122024.xlsx`
-- In `~/Downloads/`: `qcew-county-msa-csa-crosswalk-clean.xlsx`
-- In `~/Downloads/`: `brightdata_practice_area_to_12_crosswalk_90pct.csv`
+Provided with the repository:
+
+- `Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip`
+- `Data/BrightData_Lawyers/brightdata_practice_area_to_12_crosswalk_90pct.csv`
+- `Data/Geography/Crosswalks/qcew-county-msa-csa-crosswalk-clean.xlsx`
+
+Before running the notebook, extract `BrightData_Lawyer_Snapshots.zip` directly inside `Data/BrightData_Lawyers/`. This should create:
+
+- `Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.1.csv`
+- `Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.2.csv`
+- `Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.3.csv`
+
+The remaining required file is not redistributed and must be downloaded separately:
+
+- `Data/Geography/Crosswalks/ZIP_CBSA_122024.xlsx`
+
+Download the 4th Quarter 2024 ZIP-CBSA crosswalk from the HUD-USPS ZIP Code Crosswalk Files, rename it to `ZIP_CBSA_122024.xlsx`, and place it in `Data/Geography/Crosswalks/`.
 
 ### Outputs
 
@@ -122,18 +135,18 @@ The remaining profile fields, including the lawyer’s name, admission history, 
 - `pandas`
 - `numpy`
 - `openpyxl`
-- `polars (optional, used for faster CSV loading)`
+- `polars` (optional, used for faster CSV loading)
 
 ### How to run
 
-Edit the CONFIG paths if necessary, then run the single pipeline cell. The notebook prints validation counts and writes only the three listed output files.
+After placing the required files in the locations above, run the notebook from within the repository. The notebook locates the repository root automatically, prints validation counts, and writes only the three listed output files.
 
 ### Notes
 
-- Raw Bright Data files are private and are not included in the public repository.
+- The three raw Bright Data snapshots are redistributed in `BrightData_Lawyer_Snapshots.zip` with permission from Bright Data.
 - Each labeled lawyer contributes 1/N to each of their N mapped specialties in the normalized master.
-- “Unspecified” retains profiles that cannot be assigned to a valid metropolitan MSA.
-- Raw or restricted source data are not redistributed with the repository. Download or obtain them separately and preserve the expected filenames and folder structure.
+- "Unspecified" retains profiles that cannot be assigned to a valid metropolitan MSA.
+- `ZIP_CBSA_122024.xlsx` must be obtained separately from HUD and placed in `Data/Geography/Crosswalks/` with the expected filename.
 
 ---
 
@@ -151,7 +164,7 @@ Filters annual MSA BLS occupation tables to the licensed professional occupation
 1. Normalizes occupation titles for text matching.
 1. For each year from 2005 through 2024, filters the uniform BLS table once by title and once by SOC code.
 1. Applies an additional title validation to address SOC code recycling around 2021.
-1. Replaces updated titles and codes with the project’s original harmonized labels.
+1. Replaces updated titles and codes with the project's original harmonized labels.
 1. Checks whether title-based and code-based filtering produce identical tables.
 1. Saves the title-filtered harmonized table for each available year.
 
@@ -175,6 +188,6 @@ Run the notebook from top to bottom in Jupyter after placing the required files 
 
 ### Notes
 
-- The occupation list is designed for licensed, highly educated professions that can be self-employed and are not split across ambiguous “All Others” categories.
+- The occupation list is designed for licensed, highly educated professions that can be self-employed and are not split across ambiguous "All Others" categories.
 - Years with no input file are skipped.
 - Raw or restricted source data are not redistributed with the repository. Download or obtain them separately and preserve the expected filenames and folder structure.

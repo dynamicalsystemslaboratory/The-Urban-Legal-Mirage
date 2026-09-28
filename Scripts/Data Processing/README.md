@@ -1,27 +1,28 @@
 # Data Processing
 
-Processes the raw lawyer directory and harmonizes the annual BLS occupation tables used by downstream analyses.
+Processes the Bright Data lawyer files and harmonizes the annual BLS occupation tables used by downstream analyses.
 
 ## Execution order
 
-1. **`Lawyer_Paper_Complete_Pipeline.ipynb`** — Creates the lawyer master tables and firm-address counts required by most downstream notebooks.
-2. **`Filtering_BLS_Data_Extended_Professions.ipynb`** — Creates the harmonized annual BLS files required by the affordability, consistency, and legal-economy analyses.
+1. **`Preprocessing_and_Anonymization.ipynb`** — When the original Bright Data snapshots are available, creates the anonymized lawyer files and firm-address counts. This step does not need to be rerun when using the anonymized archive and processed firm-address counts provided with the repository.
+2. **`Lawyer_Paper_Complete_Pipeline.ipynb`** — Creates the lawyer master tables required by most downstream notebooks from the anonymized lawyer files.
+3. **`Filtering_BLS_Data_Extended_Professions.ipynb`** — Creates the harmonized annual BLS files required by the affordability, consistency, and legal-economy analyses.
 
-The two notebooks produce different processed inputs. The lawyer pipeline is listed first because its outputs are used most broadly across the repository.
+The lawyer and BLS notebooks produce different processed inputs. The lawyer pipeline is listed first because its outputs are used most broadly across the repository.
 
 ## Code documentation
 
 ## Complete Lawyer Data Processing Pipeline
 
-**Code file:** `Lawyer_Paper_Complete_Pipeline.ipynb`
+**Code files:** `Preprocessing_and_Anonymization.ipynb` and `Lawyer_Paper_Complete_Pipeline.ipynb`
 
 ### Purpose
 
-Processes the three raw Bright Data lawyer snapshots into the MSA-level lawyer master, the 1-over-N normalized specialty master, and firm-address statistics used throughout the paper.
+`Preprocessing_and_Anonymization.ipynb` processes the three original Bright Data lawyer snapshots into three row-level anonymized files and the aggregated MSA-level firm-address statistics. `Lawyer_Paper_Complete_Pipeline.ipynb` then processes the anonymized files into the MSA-level lawyer master and the 1-over-N normalized specialty master used throughout the paper.
 
 ### Raw Bright Data source structure
 
-The three `snap_mi504g7pxmrn977ah.[#].csv` files contain the following columns relating to the Martindale lawyer profiles. They are provided in `Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip`; extract the archive in place before running the pipeline. These raw snapshots are upstream inputs used to construct the processed lawyer dataset; they are not read directly by the affordability notebooks.
+The three `snap_mi504g7pxmrn977ah.[#].csv` files contain the following columns relating to the Martindale lawyer profiles. These original files contain identifying profile information and are not provided in the repository. They are read only by `Preprocessing_and_Anonymization.ipynb`; the public lawyer master pipeline instead reads the anonymized files distributed in `Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip`.
 
 The column names below are reproduced exactly as they appear in the raw files (spelling errors are in original source):
 
@@ -78,7 +79,7 @@ phone_telecopier
 company
 ```
 
-### Bright Data columns used
+### Raw Bright Data columns used during preprocessing
 
 Although the raw Bright Data snapshots contain many Martindale profile fields, the processing pipeline uses only the following five columns:
 
@@ -92,31 +93,48 @@ Although the raw Bright Data snapshots contain many Martindale profile fields, t
 
 The remaining profile fields, including the lawyer's name, admission history, education, reviews, contact information, and biography, are not used in the lawyer-count aggregation or downstream analyses.
 
+The preprocessing step converts the original row-level data into seven public columns:
+
+| Column | Use |
+|---|---|
+| `ID` | Anonymous seven-digit lawyer identifier replacing the profile URL. |
+| `zip_code` | ZIP used by the downstream pipeline for MSA assignment. It is selected from `mailing_address`, then `address`, then `location`. |
+| `mailing_zip` | ZIP extracted from `mailing_address` and retained separately for transparency. |
+| `city` | City derived from `zip_code` using the HUD ZIP geography. |
+| `state` | State derived from `zip_code` using the HUD ZIP geography. |
+| `specializations` | Renamed `areas_of_practice` values used by the specialty crosswalk. |
+| `number_of_specializations` | Number of reported practice areas. |
+
+`Lawyer_Paper_Complete_Pipeline.ipynb` uses `ID`, `zip_code`, and `specializations`; the other released columns are retained in the anonymized files but are not required to build the lawyer master.
+
 ### What the code does
 
-1. Checks all required raw files and creates the output directory.
-1. Loads the 13-category practice-area crosswalk and cleans raw practice-area labels.
+1. `Preprocessing_and_Anonymization.ipynb` checks the original Bright Data files and the privacy policy for all raw columns.
+1. Extracts the rightmost valid five-digit ZIP using mailing address first, address second, and location third.
+1. Builds `firm_address_counts_by_MSA.csv` from the original address information before identifying address fields are removed.
+1. Replaces the profile URL with an anonymous seven-digit ID and writes the three anonymized Bright Data files containing only the seven public columns listed above.
+1. `Lawyer_Paper_Complete_Pipeline.ipynb` checks the anonymized input files and loads the 13-category practice-area crosswalk.
 1. Builds the valid metropolitan MSA list from the QCEW county-to-MSA crosswalk and removes Puerto Rico metropolitan areas.
-1. Resolves each ZIP to one CBSA using valid-MSA status and available ZIP-to-CBSA ratio fields.
-1. Uses the profile URL as the lawyer identifier, with a file-and-row fallback when URL is missing.
-1. Extracts the rightmost valid five-digit ZIP from mailing address, address, then location.
+1. Resolves each `zip_code` to one CBSA using valid-MSA status and available ZIP-to-CBSA ratio fields.
 1. Creates a lawyer-by-specialty binary matrix and retains lawyers with zero mapped labels.
 1. Assigns each lawyer to a valid MSA and aggregates binary and 1-over-N normalized specialty counts.
-1. Counts shared addresses as firm addresses when at least two unique lawyers use the same cleaned address.
 
 ### Required inputs
 
 Provided with the repository:
 
 - `Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip`
+- `Data/BrightData_Lawyers/firm_address_counts_by_MSA.csv`
 - `Data/BrightData_Lawyers/brightdata_practice_area_to_12_crosswalk_90pct.csv`
 - `Data/Geography/Crosswalks/qcew-county-msa-csa-crosswalk-clean.xlsx`
 
-Before running the notebook, extract `BrightData_Lawyer_Snapshots.zip` directly inside `Data/BrightData_Lawyers/`. This should create:
+Before running `Lawyer_Paper_Complete_Pipeline.ipynb`, extract `BrightData_Lawyer_Snapshots.zip` directly inside `Data/BrightData_Lawyers/`. This should create:
 
-- `Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.1.csv`
-- `Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.2.csv`
-- `Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.3.csv`
+- `Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_1.csv`
+- `Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_2.csv`
+- `Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_3.csv`
+
+The original `snap_mi504g7pxmrn977ah.[#].csv` files are required only to rerun `Preprocessing_and_Anonymization.ipynb` and are not redistributed.
 
 The remaining required file is not redistributed and must be downloaded separately:
 
@@ -126,9 +144,17 @@ Download the 4th Quarter 2024 ZIP-CBSA crosswalk from the HUD-USPS ZIP Code Cros
 
 ### Outputs
 
+`Preprocessing_and_Anonymization.ipynb` creates:
+
+- `Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_1.csv`
+- `Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_2.csv`
+- `Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_3.csv`
+- `Data/BrightData_Lawyers/firm_address_counts_by_MSA.csv`
+
+`Lawyer_Paper_Complete_Pipeline.ipynb` creates:
+
 - `Data/BrightData_Lawyers/BrightData_Lawyers_master.csv`
 - `Data/BrightData_Lawyers/BrightData_Lawyers_master_normalized_1overN.csv`
-- `Data/BrightData_Lawyers/firm_address_counts_by_MSA.csv`
 
 ### Dependencies
 
@@ -139,11 +165,13 @@ Download the 4th Quarter 2024 ZIP-CBSA crosswalk from the HUD-USPS ZIP Code Cros
 
 ### How to run
 
-After placing the required files in the locations above, run the notebook from within the repository. The notebook locates the repository root automatically, prints validation counts, and writes only the three listed output files.
+For the public repository workflow, extract `BrightData_Lawyer_Snapshots.zip` inside `Data/BrightData_Lawyers/` and run `Lawyer_Paper_Complete_Pipeline.ipynb` from within the repository. The notebook locates the repository root automatically, prints validation counts, and writes only the two lawyer master files.
+
+If reconstructing the public inputs from the original Bright Data snapshots, first run `Preprocessing_and_Anonymization.ipynb`.
 
 ### Notes
 
-- The three raw Bright Data snapshots are redistributed in `BrightData_Lawyer_Snapshots.zip` with permission from Bright Data.
+- The three anonymized Bright Data snapshots are redistributed in `BrightData_Lawyer_Snapshots.zip` with permission from Bright Data; the original identifying snapshots are not redistributed.
 - Each labeled lawyer contributes 1/N to each of their N mapped specialties in the normalized master.
 - "Unspecified" retains profiles that cannot be assigned to a valid metropolitan MSA.
 - `ZIP_CBSA_122024.xlsx` must be obtained separately from HUD and placed in `Data/Geography/Crosswalks/` with the expected filename.

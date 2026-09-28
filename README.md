@@ -6,10 +6,10 @@ This repository contains the data-processing and analysis pipeline for **“The 
 
 There are two practical ways to use the repository:
 
-1. **Full reconstruction from raw data.** Start with the three raw Bright Data lawyer snapshots and all geographic, occupational, population, and proxy source files. Run the complete pipeline in the order below.
+1. **Full reconstruction from provided data.** Start with the three anonymized Bright Data lawyer snapshots and all geographic, occupational, population, and proxy source files. Run the complete pipeline in the order below.
 2. **Downstream analysis from processed data.** Start with the processed lawyer master tables and harmonized BLS tables, then run only the analysis folders needed for a particular figure or result.
 
-The three raw Bright Data lawyer snapshots are redistributed in this repository as `Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip` with permission from Bright Data. Extract the archive in place before running the lawyer pipeline. Other licensed, restricted, or very large source files are not redistributed and must be obtained separately. When processed core files are available, most downstream analyses can be reproduced without rerunning the raw lawyer pipeline.
+The three anonymized Bright Data lawyer snapshots are redistributed in this repository as `Data/BrightData_Lawyers/BrightData_Lawyer_Snapshots.zip` with permission from Bright Data. Extract the archive in place before running the lawyer pipeline. The original Bright Data snapshots containing identifying profile information are not redistributed. `Scripts/Data Processing/Preprocessing_and_Anonymization.ipynb` documents the preprocessing used to create the anonymized files and the aggregated firm-address counts from the original snapshots. Other licensed, restricted, or very large source files are not redistributed and must be obtained separately. When processed core files are available, most downstream analyses can be reproduced without rerunning the raw lawyer preprocessing.
 
 ## Repository structure
 
@@ -48,7 +48,7 @@ The Python notebooks require Jupyter and the following packages:
 pip install jupyter pandas numpy scipy statsmodels scikit-learn matplotlib seaborn geopandas openpyxl tabulate
 ```
 
-`polars` is optional and can accelerate loading of the large raw lawyer CSV files:
+`polars` is optional and can accelerate loading of the large lawyer CSV files:
 
 ```bash
 pip install polars
@@ -97,16 +97,16 @@ Data/Geography/Crosswalks/qcew-county-msa-csa-crosswalk-clean.xlsx
 Data/Geography/Crosswalks/ZIP_CBSA_122024.xlsx
 ```
 
-The first three items are provided with the repository. `BrightData_Lawyer_Snapshots.zip` contains the three raw Bright Data lawyer snapshots. Extract the archive directly inside `Data/BrightData_Lawyers/` so that the folder contains:
+The first three items are provided with the repository. `BrightData_Lawyer_Snapshots.zip` contains the three anonymized Bright Data lawyer files. Extract the archive directly inside `Data/BrightData_Lawyers/` so that the folder contains:
 
 ```text
-Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.1.csv
-Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.2.csv
-Data/BrightData_Lawyers/snap_mi504g7pxmrn977ah.3.csv
+Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_1.csv
+Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_2.csv
+Data/BrightData_Lawyers/BrightData_Lawyers_Anonymized_3.csv
 Data/BrightData_Lawyers/brightdata_practice_area_to_12_crosswalk_90pct.csv
 ```
 
-The three raw snapshots were obtained from Bright Data and contain the individual Martindale lawyer profiles used to construct the lawyer master datasets. They are redistributed here with permission from Bright Data.
+The anonymized files were created from the original Bright Data Martindale lawyer-profile snapshots using `Scripts/Data Processing/Preprocessing_and_Anonymization.ipynb`. The original snapshots contain identifying profile information and are not redistributed in this repository.
 
 `ZIP_CBSA_122024.xlsx` is the HUD-USPS ZIP Code Crosswalk File published by the U.S. Department of Housing and Urban Development (HUD), which allocates USPS ZIP Codes to CBSAs, and can be obtained here: https://www.huduser.gov/portal/datasets/usps_crosswalk.html. The downloaded crosswalk file is named "ZIP-CBSA_122024" and should be renamed to `ZIP_CBSA_122024.xlsx` and placed in `Data/Geography/Crosswalks/`. Newer versions of this crosswalk may contain new headers. For reproducibility, please follow the following headers' naming scheme:
 
@@ -127,11 +127,16 @@ To download the file, register on the HUD website, select ZIP-CBSA for "Crosswal
 
 `brightdata_practice_area_to_12_crosswalk_90pct.csv` maps Martindale's listed areas of practice to lawyer specializations. This crosswalk was manually created for the purposes of this paper and is not an official or endorsed crosswalk from Martindale. It is provided in `Data/BrightData_Lawyers/`.
 
-The pipeline, `Lawyer_Paper_Complete_Pipeline.ipynb`, produces the three core files used throughout the repository:
+`Preprocessing_and_Anonymization.ipynb` produces `firm_address_counts_by_MSA.csv` before identifying address information is removed. The public pipeline, `Lawyer_Paper_Complete_Pipeline.ipynb`, uses the anonymized lawyer files and produces the two lawyer master files used throughout the repository:
 
 ```text
 Data/BrightData_Lawyers/BrightData_Lawyers_master.csv
 Data/BrightData_Lawyers/BrightData_Lawyers_master_normalized_1overN.csv
+```
+
+The aggregated firm-address file is also provided in the repository:
+
+```text
 Data/BrightData_Lawyers/firm_address_counts_by_MSA.csv
 ```
 
@@ -204,11 +209,17 @@ The six legal-demand proxies require bankruptcy, NIBRS crime, ACS family and imm
 ## Pipeline overview
 
 ```text
-Raw Bright Data snapshots + ZIP/CBSA and specialty crosswalks
+Raw Bright Data snapshots + ZIP/CBSA crosswalks
+    └── Preprocessing_and_Anonymization.ipynb
+        ├── BrightData_Lawyers_Anonymized_1.csv
+        ├── BrightData_Lawyers_Anonymized_2.csv
+        ├── BrightData_Lawyers_Anonymized_3.csv
+        └── firm_address_counts_by_MSA.csv
+
+Anonymized Bright Data snapshots + ZIP/CBSA and specialty crosswalks
     └── Lawyer_Paper_Complete_Pipeline.ipynb
         ├── BrightData_Lawyers_master.csv
-        ├── BrightData_Lawyers_master_normalized_1overN.csv
-        └── firm_address_counts_by_MSA.csv
+        └── BrightData_Lawyers_master_normalized_1overN.csv
 
 Raw annual BLS tables + licensed-profession crosswalk
     └── Filtering_BLS_Data_Extended_Professions.ipynb
@@ -257,6 +268,8 @@ Scripts/Helpers/Helpers.py
 It is imported by the abundance, consistency, and proxy plotting notebooks. It is not normally run as a standalone script.
 
 ### 2. Build the processed core data
+
+If using the anonymized Bright Data archive provided with the repository, extract it in `Data/BrightData_Lawyers/` before running the lawyer pipeline. `Preprocessing_and_Anonymization.ipynb` only needs to be rerun when reconstructing the anonymized files and firm-address counts from the original Bright Data snapshots.
 
 Run:
 
@@ -391,4 +404,4 @@ The second notebook saves `Data/Processed Data/Legal-Economy-Coupling/Legal_Econ
 - The 1-over-N normalized lawyer master assigns a lawyer with `N` mapped specialties a weight of `1/N` in each specialty.
 - Geographic analysis is restricted to valid metropolitan statistical areas; Micropolitan Statistical Areas, Connecticut MSAs, and Puerto Rico metropolitan areas are excluded where specified by the processing pipeline.
 - Preserve exact filenames and directory names. Several notebooks rely on fixed source filenames even though the repository root itself is detected automatically.
-- The Bright Data lawyer snapshots are redistributed in `BrightData_Lawyer_Snapshots.zip` with permission from Bright Data. Other large, private, licensed, or restricted source files remain excluded unless otherwise documented.
+- The anonymized Bright Data lawyer snapshots are redistributed in `BrightData_Lawyer_Snapshots.zip` with permission from Bright Data. The original identifying Bright Data snapshots and other large, private, licensed, or restricted source files remain excluded unless otherwise documented.
